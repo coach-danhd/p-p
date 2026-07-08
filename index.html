@@ -1,0 +1,1820 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>Punto de Partida — Dan Hernández Coach</title>
+<link rel="icon" href="https://raw.githubusercontent.com/coach-danhd/punto-partida/main/favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;0,8..60,900;1,8..60,300;1,8..60,400&family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root{
+  --cream:#fffcf9;--black:#1d1d1b;--red:#e94734;--blue:#2227f7;
+  --orange:#ff773b;--navy:#141a84;--gray-light:#f3f0ec;
+  --gray-mid:#d9d5cf;--gray-text:#6b6760;
+  --ff-serif:'Source Serif 4',Georgia,serif;
+  --ff-sans:'Open Sans',system-ui,sans-serif;
+  --radius-sm:8px;--radius-md:14px;--radius-lg:20px;
+  --shadow:0 2px 16px rgba(29,29,27,.08);
+  --shadow-lg:0 8px 40px rgba(29,29,27,.13);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;color-scheme:light}
+body{font-family:var(--ff-sans);background:var(--cream);color:var(--black);min-height:100vh;font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+
+/* TIPO */
+.t-h1{font-family:var(--ff-serif);font-weight:900;line-height:1.05}
+.t-h2{font-family:var(--ff-serif);font-weight:600;line-height:1.15}
+.t-h3{font-family:var(--ff-serif);font-weight:400;line-height:1.3}
+.t-title{font-family:var(--ff-sans);font-weight:700}
+.t-body{font-family:var(--ff-sans);font-weight:400}
+.t-label{font-family:var(--ff-sans);font-weight:600;font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+
+/* NAVIGATION ROW / BUTTONS */
+.nav-actions {
+  display: flex; align-items: center; gap: 10px; width: 100%; justify-content: center;
+}
+.btn-icon-back {
+  flex: 0 0 auto; width: 50px; height: 50px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--blue); color: white; border: none; border-radius: var(--radius-sm);
+  cursor: pointer; transition: background .15s, transform .15s;
+}
+.btn-icon-back:hover { background: var(--navy); transform: translateY(-1px); }
+.btn-icon-back i { font-size: 22px; color: white; }
+
+.btn-primary {
+  flex: 1; height: 50px; padding: 0 24px; background: var(--red); color: white;
+  border: none; border-radius: var(--radius-sm);
+  font-family: var(--ff-sans); font-size: 15px; font-weight: 700;
+  cursor: pointer; transition: all .2s; letter-spacing: .01em;
+}
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,0,0,.15); filter: brightness(1.1); }
+.btn-primary:disabled { background: var(--gray-mid) !important; cursor: not-allowed; transform: none; box-shadow: none; filter: none; }
+
+.btn-secondary {
+  width: 100%; padding: 13px 24px; background: white; color: var(--black);
+  border: 1.5px solid var(--gray-mid); border-radius: var(--radius-sm);
+  font-family: var(--ff-sans); font-size: 14px; font-weight: 600;
+  cursor: pointer; transition: all .2s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.btn-secondary:hover { border-color: var(--black); background: var(--gray-light); }
+
+/* SCREENS */
+.screen{display:none;min-height:100vh;padding-top:56px;transition:padding-top 0.3s ease}
+.screen.active{display:block}
+
+.info-trigger{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:13px;color:var(--blue);cursor:pointer;
+  border:none;background:none;font-family:var(--ff-sans);padding:0;
+}
+.info-trigger i{font-size:16px}
+.cta-fixed{
+  position:fixed;bottom:0;left:0;right:0;z-index:50;
+  background:linear-gradient(to top,var(--cream) 70%,transparent);
+  padding:1.5rem 1.5rem 1.75rem;display:flex; flex-direction: column; align-items: center; gap: .75rem;
+}
+.cta-fixed .nav-actions { max-width:500px; width: 100%; }
+
+/* TOOLTIP */
+.tooltip-overlay{
+  display:none;position:fixed;inset:0;z-index:200;
+  background:rgba(29,29,27,.45);backdrop-filter:blur(2px);
+  align-items:flex-end;justify-content:center;
+}
+.tooltip-overlay.open{display:flex}
+@media(min-width:640px){.tooltip-overlay{align-items:center}}
+.tooltip-sheet{
+  position: relative;
+  background:white;border-radius:var(--radius-lg) var(--radius-lg) 0 0;
+  padding:2.5rem 1.5rem 2.5rem;width:100%;max-width:500px;
+  max-height:75vh;overflow-y:auto;animation:slideUp .25s ease;
+}
+@media(min-width:640px){.tooltip-sheet{border-radius:var(--radius-lg);margin:1rem;padding:2rem}}
+@keyframes slideUp{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
+.tooltip-handle{width:36px;height:4px;background:var(--gray-mid);border-radius:2px;margin:0 auto 1.5rem;position:absolute;top:12px;left:50%;transform:translateX(-50%)}
+@media(min-width:640px){.tooltip-handle{display:none}}
+.tooltip-close-x {
+  position: absolute; top: 18px; right: 18px;
+  background: none; border: none; font-size: 24px; color: var(--gray-text);
+  cursor: pointer; transition: color 0.15s; padding: 4px;
+}
+.tooltip-close-x:hover { color: var(--black); }
+
+.tooltip-icon-row{display:flex;align-items:center;gap:10px;margin-bottom:.85rem}
+.tooltip-icon-wrap{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.tooltip-var-name{font-family:var(--ff-serif);font-size:1.15rem;font-weight:600}
+.tooltip-desc{font-size:14.5px;line-height:1.75;color:var(--black)}
+
+/* ══ PANTALLA 1: INICIO ══ */
+.inicio-hero{text-align:center;padding:2.5rem 1.5rem 1.5rem;max-width:580px;margin:0 auto}
+.inicio-eyebrow{font-family:var(--ff-sans);font-size:11px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--red);margin-bottom:.85rem}
+.inicio-title{font-family:var(--ff-serif);font-weight:900;font-size:clamp(2.6rem,9vw,4rem);line-height:1.0;color:var(--black);margin-bottom:.5rem}
+.inicio-intro{font-family:var(--ff-sans);font-size:15px;font-weight:400;color:var(--black);line-height:1.8;margin-bottom:.6rem}
+
+/* GRID RUEDAS */
+.ruedas-section{padding:1rem 1rem 12rem;max-width:640px;margin:0 auto}
+.ruedas-label-wrap{text-align:center;margin-bottom:1.5rem}
+.ruedas-label{
+  display:inline-flex;align-items:center;gap:10px;
+  font-family:var(--ff-sans);font-size:14px;font-weight:600;
+  color:var(--black);border:2px solid var(--red);border-radius:var(--radius-sm);
+  padding:12px 18px;background:white;text-align:left;
+}
+.ruedas-label i{color:var(--red);font-size:22px;flex-shrink:0}
+
+.ruedas-grid{display:grid;grid-template-columns:1fr;gap:1.75rem}
+
+.rueda-card{background:white;border-radius:var(--radius-md);border:1.5px solid var(--gray-mid);overflow:hidden;transition:box-shadow .2s,transform .2s}
+.rueda-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-2px)}
+.rueda-card-header{padding:1.1rem 1.25rem .75rem;display:flex;align-items:center;gap:12px}
+.rueda-icon-wrap{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.rueda-card-title{font-family:var(--ff-serif);font-size:1.15rem;font-weight:600}
+.rueda-card-sub{font-family:var(--ff-sans);font-size:11px;color:var(--gray-text);margin-top:2px;font-style:italic}
+.celular-wrap{padding:.75rem 1rem 1.25rem;display:flex;justify-content:center}
+.celular-wrap svg{width:100%;max-width:340px;overflow:visible}
+
+/* ══ PANTALLA 2: INSTRUCCIONES ══ */
+.instrucciones-wrap{max-width:600px;margin:0 auto;padding:1rem 1.5rem 12rem}
+.screen-title{font-family:var(--ff-serif);font-weight:600;font-size:clamp(1.8rem,6vw,2.4rem);margin-bottom:1rem}
+.instrucciones-texto{font-family:var(--ff-sans);font-size:15px;line-height:1.8;color:var(--black);margin-bottom:2rem}
+.instrucciones-texto p+p{margin-top:.75rem}
+.ruedas-selector{display:flex;flex-direction:column;gap:.75rem;margin-bottom:1.5rem}
+.rueda-option{background:white;border:1.5px solid var(--gray-mid);border-radius:var(--radius-md);cursor:pointer;transition:all .2s;overflow:hidden}
+.rueda-option:hover{border-color:var(--gray-text);box-shadow:var(--shadow)}
+.rueda-option.selected{border-width:2px}
+.rueda-option-row{display:flex;align-items:center;gap:14px;padding:1.1rem 1.25rem}
+.rueda-option-icon{width:40px;height:40px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.rueda-option-name{font-family:var(--ff-serif);font-size:1rem;font-weight:600}
+.rueda-option-tag{font-family:var(--ff-sans);font-size:11px;color:var(--gray-text);font-style:italic}
+.rueda-option-check{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--gray-mid);display:flex;align-items:center;justify-content:center;font-size:12px;color:white;transition:all .2s;flex-shrink:0;margin-left:auto}
+.rueda-option.selected .rueda-option-check{border-color:transparent;background:var(--black)}
+.rueda-option-desc{display:none;padding:.85rem 1.25rem 1rem;border-top:1px solid var(--gray-light);font-family:var(--ff-sans);font-size:13.5px;line-height:1.75;color:var(--gray-text)}
+.rueda-option.selected .rueda-option-desc{display:block}
+.instrucciones-nota{font-family:var(--ff-sans);font-size:13px;color:var(--gray-text);display:flex;align-items:flex-start;gap:8px;line-height:1.6}
+.instrucciones-nota i{color:var(--orange);font-size:16px;flex-shrink:0;margin-top:2px}
+
+/* ══ PANTALLA 3: RUEDA ══ */
+.rueda-screen-wrap{max-width:1100px;margin:0 auto;padding:1rem 1.25rem 7rem}
+.rueda-header{display:flex;align-items:center;gap:12px;margin-bottom:1.25rem;padding-bottom:1.25rem;border-bottom:1px solid var(--gray-mid)}
+.rueda-header-icon{width:40px;height:40px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:20px}
+.rueda-header-name{font-family:var(--ff-serif);font-size:1.25rem;font-weight:600}
+.rueda-header-sub{font-family:var(--ff-sans);font-size:12px;color:var(--gray-text);font-style:italic}
+
+/* MOBILE */
+.mobile-var-view{display:block}
+.desktop-var-view{display:none}
+@media(min-width:900px){.mobile-var-view{display:none}.desktop-var-view{display:grid;grid-template-columns:1fr 380px;gap:2rem;align-items:start}}
+
+.mobile-radar-top{display:flex;flex-direction:column;align-items:center;margin-bottom:.85rem}
+.mobile-radar-top canvas{width:100%;max-width:450px;display:block;margin:0 auto}
+.mobile-var-progress{font-family:var(--ff-sans);font-size:12px;color:var(--gray-text);text-align:center;margin-bottom:.5rem}
+.mobile-var-progress-bar{height:3px;background:var(--gray-light);border-radius:2px;margin-bottom:1.25rem;overflow:hidden}
+.mobile-var-progress-fill{height:100%;border-radius:2px;transition:width .4s ease}
+.mobile-var-card{background:white;border-radius:var(--radius-md);border:1px solid var(--gray-light);padding:1.25rem;margin-bottom:1.25rem}
+.mobile-var-top{display:flex;align-items:center;gap:10px;margin-bottom:.6rem}
+.mobile-var-icon{font-size:22px}
+.mobile-var-name{font-family:var(--ff-serif);font-size:1.2rem;font-weight:600;flex:1}
+.mobile-var-desc{font-family:var(--ff-sans);font-size:13.5px;color:var(--gray-text);line-height:1.7;margin-bottom:1.25rem}
+
+input[type=range]{-webkit-appearance:none;flex:1;height:6px;border-radius:3px;background:var(--gray-mid);outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:white;border:2.5px solid var(--black);box-shadow:0 2px 8px rgba(0,0,0,.15);cursor:pointer;transition:transform .1s}
+input[type=range]::-webkit-slider-thumb:active{transform:scale(1.2)}
+.slider-wrap{margin-bottom:.5rem}
+.slider-row{display:flex;align-items:center;gap:12px;margin-bottom:.35rem}
+.slider-val{font-family:var(--ff-serif);font-size:2.2rem;font-weight:900;min-width:40px;text-align:center;line-height:1}
+.slider-labels{display:flex;justify-content:space-between;font-family:var(--ff-sans);font-size:10px;color:var(--gray-text)}
+
+.subs-wrap{margin-top:.75rem;background:var(--gray-light);border-radius:var(--radius-sm);padding:.85rem}
+.sub-row{display:flex;align-items:center;gap:8px;margin-bottom:.85rem}
+.sub-row:last-child{margin-bottom:0}
+.sub-name{font-family:var(--ff-sans);font-size:12.5px;flex:1;color:var(--black)}
+.sub-slider{flex:1;height:6px}
+.sub-slider:disabled{opacity:.35;cursor:not-allowed}
+.sub-val{font-family:var(--ff-sans);font-size:13px;font-weight:600;min-width:20px;text-align:right}
+
+/* DESKTOP vars */
+.desktop-var-item{background:white;border:1px solid var(--gray-light);border-radius:var(--radius-sm);margin-bottom:.6rem;overflow:hidden;transition:border-color .15s}
+.desktop-var-item:hover{border-color:var(--gray-mid)}
+.desktop-var-header{display:flex;align-items:center;gap:10px;padding:.85rem 1rem}
+.desktop-var-icon{font-size:18px;flex-shrink:0}
+.desktop-var-name{font-family:var(--ff-serif);font-size:.95rem;font-weight:600;flex:1}
+.desktop-var-score{font-family:var(--ff-serif);font-size:1.2rem;font-weight:900;min-width:28px;text-align:right}
+.desktop-var-desc{font-family:var(--ff-sans);font-size:12px;color:var(--gray-text);line-height:1.5;padding:0 1rem .5rem 2.8rem}
+.desktop-var-slider-row{padding:.4rem 1rem .85rem 2.8rem;display:flex;align-items:center;gap:10px}
+.desktop-subs{padding:.35rem 1rem .75rem 2.8rem;background:var(--gray-light)}
+.desktop-sub-row{display:flex;align-items:center;gap:8px;padding:.35rem 0}
+.desktop-sub-name{font-family:var(--ff-sans);flex:1;font-size:12px}
+.desktop-sub-input{flex:1;height:6px}
+
+/* Radar desktop sticky */
+.desktop-radar-card{position:sticky;top:70px;background:white;border:1px solid var(--gray-light);border-radius:var(--radius-md);padding:1.25rem}
+.desktop-radar-title{font-family:var(--ff-serif);font-size:1rem;font-weight:600;margin-bottom:.2rem}
+.desktop-radar-hint{font-family:var(--ff-sans);font-size:11px;color:var(--gray-text);margin-bottom:.85rem}
+#desktopRadarCanvas{width:100%;max-width: 500px;display:block;margin:0 auto}
+.desktop-avg{text-align:center;margin-top:1rem}
+.desktop-avg-val{font-family:var(--ff-serif);font-size:2.8rem;font-weight:900;display:block}
+.desktop-avg-label{font-family:var(--ff-sans);font-size:11px;color:var(--gray-text)}
+
+/* RESUMEN */
+.resumen-wrap{display:none;text-align:center;padding:1.5rem 1.5rem 6rem;max-width:700px;margin:0 auto}
+.resumen-wrap.active{display:block}
+.resumen-title{font-family:var(--ff-serif);font-weight:900;font-size:1.9rem;margin-bottom:.75rem}
+.resumen-texto{font-family:var(--ff-sans);font-size:15px;line-height:1.8;margin-bottom:1.5rem}
+.resumen-radar{display:flex;justify-content:center;margin-bottom:1.5rem}
+.resumen-radar canvas{max-width:600px;width:100%}
+.resumen-scores{display:grid;grid-template-columns:repeat(2,1fr);gap:.5rem;margin-bottom:2.5rem;text-align:left}
+@media (max-width: 500px){ .resumen-scores{grid-template-columns:1fr;} }
+.score-pill{display:flex;align-items:center;gap:8px;background:white;border:1px solid var(--gray-light);border-radius:var(--radius-sm);padding:.6rem .85rem}
+.score-pill-icon{font-size:15px}
+.score-pill-name{font-family:var(--ff-sans);font-size:12px;flex:1;line-height:1.2}
+.score-pill-val{font-family:var(--ff-serif);font-size:1.1rem;font-weight:900}
+.results-actions-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  max-width: 500px;
+  margin: 0 auto;
+}
+@media (min-width: 600px) {
+  .results-actions-grid { grid-template-columns: 1fr 1fr; }
+  .results-actions-grid .btn-primary { grid-column: 1 / -1; }
+}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;z-index:300;background:rgba(29,29,27,.5);backdrop-filter:blur(3px);align-items:flex-end;justify-content:center}
+.modal-overlay.open{display:flex}
+@media(min-width:640px){.modal-overlay{align-items:center}}
+.modal-sheet{position:relative;background:white;border-radius:var(--radius-lg) var(--radius-lg) 0 0;padding:1.75rem 1.5rem 2.5rem;width:100%;max-width:460px;animation:slideUp .25s ease}
+@media(min-width:640px){.modal-sheet{border-radius:var(--radius-lg);margin:1rem}}
+.modal-handle{width:36px;height:4px;background:var(--gray-mid);border-radius:2px;margin:0 auto 1.5rem}
+@media(min-width:640px){.modal-handle{display:none}}
+.modal-title{font-family:var(--ff-serif);font-size:1.4rem;font-weight:600;margin-bottom:.5rem}
+.modal-text{font-family:var(--ff-sans);font-size:13.5px;color:var(--gray-text);line-height:1.7;margin-bottom:1.5rem}
+.form-group{margin-bottom:1rem}
+.form-label{display:block;font-family:var(--ff-sans);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.4rem;color:var(--gray-text)}
+.form-input{width:100%;padding:12px 14px;border:1.5px solid var(--gray-mid);border-radius:var(--radius-sm);font-family:var(--ff-sans);font-size:15px;color:var(--black);background:white;outline:none;transition:border-color .2s}
+.form-input:focus{border-color:var(--blue)}
+.modal-actions{display:flex;flex-direction:column;gap:.65rem;margin-top:1.5rem}
+.modal-actions .btn-primary{flex:none}
+
+/* ══ STORYTELLING ══ */
+.story-wrap{max-width:640px;margin:0 auto;padding:4.5rem 1.5rem 11rem;min-height:calc(100vh - 56px);display:flex;flex-direction:column;justify-content:center}
+.story-panel{display:none;animation:storyIn .5s ease}
+.story-panel.active{display:block}
+@keyframes storyIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.story-eyebrow{font-family:var(--ff-sans);font-size:11px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--red);margin-bottom:1rem;display:flex;align-items:center;gap:10px}
+.story-eyebrow .story-num{font-family:var(--ff-serif);font-size:13px;font-weight:900;color:var(--black);background:var(--gray-light);border-radius:999px;width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center}
+.story-title{font-family:var(--ff-serif);font-weight:900;font-size:clamp(2rem,7.5vw,3.1rem);line-height:1.06;margin-bottom:1.25rem;letter-spacing:-.01em}
+.story-title em{font-style:italic;font-weight:400;color:var(--red)}
+.story-body{font-family:var(--ff-sans);font-size:15.5px;line-height:1.85;color:var(--black)}
+.story-body p+p{margin-top:1rem}
+.story-body .accent{color:var(--red);font-weight:600}
+.story-signature{margin:1.75rem 0 .5rem;display:flex;justify-content:center}
+.story-signature svg{width:100%;max-width:320px;overflow:visible}
+.story-mini-wheels{display:flex;flex-direction:column;gap:.6rem;margin-top:1.5rem}
+.story-mini{display:flex;align-items:center;gap:12px;background:white;border:1.5px solid var(--gray-mid);border-radius:var(--radius-md);padding:.85rem 1rem;border-left-width:4px}
+.story-mini-icon{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+.story-mini-name{font-family:var(--ff-serif);font-size:1rem;font-weight:600}
+.story-mini-tag{font-family:var(--ff-sans);font-size:12px;color:var(--gray-text)}
+.story-dots{position:fixed;top:2rem;left:0;right:0;z-index:60;display:flex;gap:8px;justify-content:center;margin-bottom:1rem}
+.story-dot{width:8px;height:8px;border-radius:999px;background:var(--gray-mid);transition:all .3s}
+.story-dot.active{width:26px;background:var(--red)}
+.story-skip{background:none;border:none;color:var(--gray-text);font-family:var(--ff-sans);font-size:13px;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.story-skip:hover{color:var(--black)}
+@keyframes ringPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
+@keyframes ringDraw{from{stroke-dashoffset:var(--c,340)}to{stroke-dashoffset:0}}
+@keyframes ringLoop{0%,7%{stroke-dashoffset:var(--c)}45%,60%{stroke-dashoffset:0}100%{stroke-dashoffset:var(--c)}}
+/* PORTADA */
+#screen-portada{padding-top:0;background:var(--cream)}
+.portada-wrap{max-width:640px;margin:0 auto;padding:4.5rem 1.5rem 11rem;min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}
+.brand-logo{height:102px;width:auto;display:block;margin:0 auto 1.25rem}
+.portada-hero{width:58%;max-width:210px;margin:0 auto 1.9rem}
+.portada-hero svg{width:100%;overflow:visible;display:block}
+.portada-title{font-family:var(--ff-serif);font-weight:900;font-size:clamp(2.4rem,9vw,3.6rem);line-height:1.04;letter-spacing:-.015em;margin-bottom:1.1rem;color:var(--black)}
+.portada-title em{font-style:italic;font-weight:400;color:var(--red)}
+.portada-sub{font-family:var(--ff-sans);font-size:16px;line-height:1.7;color:var(--gray-text);max-width:470px;margin-bottom:1.9rem}
+.portada-badge{font-family:var(--ff-sans);font-size:12.5px;font-weight:600;color:var(--black);background:var(--gray-light);border:1.5px solid var(--gray-mid);border-left:4px solid var(--blue);border-radius:var(--radius-md);padding:.75rem 1.1rem;max-width:440px;line-height:1.5;text-align:left}
+.story-sig-float{float:left;width:46%;max-width:168px;margin:.35rem 1.1rem .3rem 0;display:block}
+.story-sig-float svg{width:100%;max-width:none;overflow:visible;display:block}
+.story-diagram{margin-top:1.25rem}
+.story-diagram svg{width:100%;max-width:380px;display:block;margin:0 auto;overflow:visible}
+.story-diagram text{font-family:var(--ff-sans)}
+.mini-wheels-grid{display:grid;grid-template-columns:1fr 1.7fr 1fr;align-items:center;gap:.6rem .6rem;max-width:620px;margin:0 auto}
+.mw-svg{grid-row:1;grid-column:2}
+.mw-svg svg{width:100%;max-width:none;display:block;margin:0 auto;overflow:visible}
+.mw-label{font-family:var(--ff-sans);grid-row:1;line-height:1.3}
+.mw-label-left{grid-column:1;text-align:right}
+.mw-label-right{grid-column:3;text-align:left}
+.mw-label-bottom{grid-row:2;grid-column:1/-1;text-align:center;margin-top:.25rem}
+.mw-label-name{font-family:var(--ff-serif);font-size:17px;font-weight:600;display:block}
+.mw-label-tag{font-family:var(--ff-sans);font-size:12.5px;color:var(--gray-text);display:block;margin-top:2px;line-height:1.4}
+.story-energy-stack{margin-top:1.5rem;display:flex;flex-direction:column;gap:1rem}
+.story-energy{background:white;border:1.5px solid var(--gray-mid);border-radius:var(--radius-md);padding:1.1rem 1.2rem}
+.story-energy-title{font-family:var(--ff-sans);font-size:11.5px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--gray-text);margin-bottom:.9rem}
+.energy-legend{display:flex;flex-wrap:wrap;gap:1.1rem;margin-bottom:1.1rem;font-family:var(--ff-sans);font-size:12px;color:var(--gray-text)}
+.energy-legend-item{display:flex;align-items:center;gap:7px}
+.energy-swatch{width:22px;height:10px;border-radius:4px;flex-shrink:0;box-sizing:border-box}
+.energy-swatch-dashed{background:transparent;border:2px dashed var(--gray-text)}
+.energy-swatch-filled{background:var(--gray-text)}
+.energy-cat{margin-bottom:1.1rem}
+.energy-cat:last-child{margin-bottom:0}
+.energy-cat-name{font-family:var(--ff-sans);font-size:13px;font-weight:700;color:var(--black);margin-bottom:.4rem}
+.energy-row{display:flex;align-items:center;gap:10px;margin-bottom:.4rem}
+.energy-row:last-child{margin-bottom:0}
+.energy-track{flex:1;height:14px;background:var(--gray-light);border-radius:999px;overflow:hidden}
+.energy-fill{height:100%;width:0;border-radius:999px;transition:width 1.15s cubic-bezier(.16,1,.3,1)}
+.energy-fill-dashed{height:100%;width:0;border-radius:999px;box-sizing:border-box;border:2px dashed;background:transparent;transition:width 1.15s cubic-bezier(.16,1,.3,1)}
+.energy-pct{flex:0 0 40px;text-align:right;font-family:var(--ff-serif);font-weight:700;font-size:14px}
+/* Historia: sin barra superior + botones centrados */
+#screen-historia{padding-top:0}
+#screen-historia .story-wrap{min-height:100vh}
+#screen-historia .cta-fixed .nav-actions{max-width:420px}
+
+
+/* ══ CATEGORIZAR ══ */
+.cat-wrap{max-width:680px;margin:0 auto;padding:1.25rem 1.5rem 12rem}
+.cat-intro{font-family:var(--ff-sans);font-size:15px;line-height:1.8;color:var(--black);margin-bottom:1.1rem}
+.cat-note{display:flex;align-items:flex-start;gap:9px;background:var(--gray-light);border-radius:var(--radius-sm);padding:.85rem 1rem;font-family:var(--ff-sans);font-size:13px;line-height:1.65;color:var(--gray-text);margin-bottom:1.25rem}
+.cat-note i{color:var(--blue);font-size:17px;flex-shrink:0;margin-top:1px}
+.cat-counts{display:flex;gap:.5rem;margin-bottom:1.25rem}
+.cat-count{flex:1;text-align:center;border-radius:var(--radius-sm);padding:.6rem .3rem;border:1.5px solid var(--gray-mid)}
+.cat-count-num{font-family:var(--ff-serif);font-size:1.6rem;font-weight:900;line-height:1}
+.cat-count-lbl{font-family:var(--ff-sans);font-size:9.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-top:3px;color:var(--gray-text)}
+.cat-item{background:white;border:1px solid var(--gray-light);border-radius:var(--radius-md);padding:.9rem 1rem;margin-bottom:.65rem;border-left:4px solid var(--gray-mid);transition:border-color .2s}
+.cat-item-top{display:flex;align-items:center;gap:11px;margin-bottom:.7rem}
+.cat-item-icon{font-size:19px;flex-shrink:0}
+.cat-item-name{font-family:var(--ff-serif);font-size:1rem;font-weight:600;flex:1;line-height:1.2}
+.cat-item-score{font-family:var(--ff-sans);font-size:11px;color:var(--gray-text);background:var(--gray-light);border-radius:999px;padding:3px 10px;font-weight:600;flex-shrink:0}
+.cat-toggle{display:flex;gap:6px}
+.cat-toggle button{flex:1;border:1.5px solid var(--gray-mid);background:white;border-radius:var(--radius-sm);padding:.5rem .3rem;font-family:var(--ff-sans);font-size:12.5px;font-weight:700;color:var(--gray-text);cursor:pointer;transition:all .15s}
+.cat-toggle button:hover{border-color:var(--gray-text)}
+.cat-toggle button.on{color:white;border-color:transparent}
+
+.resumen-cierre{margin-bottom:1.5rem}
+.resumen-pasos{background:white;border:1.5px solid var(--gray-mid);border-left:4px solid var(--blue);border-radius:var(--radius-md);padding:1.1rem 1.3rem;margin:1.75rem auto;max-width:520px;text-align:left}
+.resumen-pasos-title{font-family:var(--ff-serif);font-weight:600;font-size:16px;color:var(--black);margin-bottom:.35rem}
+.resumen-pasos-body{font-size:14px;line-height:1.65}
+
+@media (prefers-reduced-motion: reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+
+<!-- PROGRESO GLOBAL -->
+<div class="story-dots" id="globalDots"></div>
+
+<!-- TOOLTIP -->
+<div class="tooltip-overlay" id="tooltipOverlay" onclick="closeTooltip(event)">
+  <div class="tooltip-sheet" onclick="event.stopPropagation()">
+    <div class="tooltip-handle"></div>
+    <button class="tooltip-close-x" onclick="closeTooltip()"><i class="ti ti-x"></i></button>
+    <div class="tooltip-icon-row">
+      <div class="tooltip-icon-wrap" id="tt-icon-wrap"><i class="ti" id="tt-icon"></i></div>
+      <div class="tooltip-var-name" id="tt-name"></div>
+    </div>
+    <div class="tooltip-desc" id="tt-desc"></div>
+  </div>
+</div>
+
+<!-- MODAL DESCARGA -->
+<div class="modal-overlay" id="modalDescarga" onclick="closeModal(event)">
+  <div class="modal-sheet" onclick="event.stopPropagation()">
+    <div class="modal-handle"></div>
+    <button class="tooltip-close-x" onclick="closeModal()"><i class="ti ti-x"></i></button>
+    <div class="modal-title">Tu resumen está listo</div>
+    <div class="modal-text">Ingresa tu nombre y la fecha de hoy para personalizar tu resumen. Guárdalo: lo necesitarás para construir tu estrategia personal y tablero de control.</div>
+    <div class="form-group">
+      <label class="form-label" for="input-nombre">Tu nombre</label>
+      <input class="form-input" type="text" id="input-nombre" placeholder="Escribe tu nombre completo">
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="input-fecha">Fecha</label>
+      <input class="form-input" type="date" id="input-fecha">
+    </div>
+    <div class="modal-actions">
+      <button class="btn-primary" id="btn-descargar-modal" onclick="generarPDF(false)">Descargar versión escritorio</button>
+      <button class="btn-secondary" id="btn-descargar-modal-movil" onclick="generarPDF(true)">Descargar reporte versión móvil</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PANTALLA 0: HISTORIA (STORYTELLING) ══ -->
+<!-- ══ PORTADA ══ -->
+<div class="screen active" id="screen-portada">
+  <div class="portada-wrap">
+    <img class="brand-logo" src="https://raw.githubusercontent.com/coach-danhd/punto-partida/main/imagotipo-N.PNG" alt="Dan Hernández Coach" onerror="this.style.display='none'">
+    <div class="portada-hero" id="portadaHero"></div>
+    <h1 class="portada-title">3 ruedas, <em>un objetivo</em></h1>
+    <p class="portada-sub">Herramienta para comenzar a priorizar y enfocar tu energía, para sostener tu determinación, compromiso y motivación.</p>
+    <div class="portada-badge">Este es el primer paso para desarrollar tu estrategia de accountability y desarrollo personal.</div>
+  </div>
+  <div class="cta-fixed">
+    <div class="nav-actions" style="max-width:420px">
+      <button class="btn-primary" onclick="empezarHistoria()">Comenzar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ HISTORIA ══ -->
+<div class="screen" id="screen-historia">
+  <div class="story-wrap">
+    <div class="story-dots" id="storyDots"></div>
+
+    <!-- PANEL 1 -->
+    <div class="story-panel active" id="story-1">
+      <div class="story-eyebrow"><span class="story-num">1</span> Foto de tu vida actual</div>
+      <h1 class="story-title">Ningún desarrollo personal arranca sin un <em>punto de partida</em>.</h1>
+      <div class="story-body">
+        <div class="story-sig-float" id="storySignature"></div>
+        <p>Puedes tener clarísimo a dónde quieres llegar. Pero toda estrategia de desarrollo personal necesita algo más: saber, con honestidad, desde dónde estás empezando.</p>
+        <p>Ese punto de partida casi nunca se mira de frente. Damos por hecho que ya lo conocemos… y avanzamos sobre una suposición.</p>
+        <p>Por eso lo primero no es fijar la meta, ni exigirte más disciplina. Es tomar <span class="accent">una foto honesta de tu vida de hoy:</span> el terreno real desde el que vas a sostener tu compromiso y construir tu desarrollo.</p>
+      </div>
+    </div>
+
+    <!-- PANEL 2 -->
+    <div class="story-panel" id="story-2">
+      <div class="story-eyebrow"><span class="story-num">2</span> La distinción clave</div>
+      <h1 class="story-title">No puedes priorizar… lo que no has <em>distinguido</em>.</h1>
+      <div class="story-body">
+        <p>Querer construir tu determinación y compromiso… y decidir tus prioridades al mismo tiempo, sobre una lista revuelta donde todo pesa igual, es la receta del caos. Te exiges en todo, avanzas en poco, y terminas agotado sin saber bien por qué.</p>
+        <p>El problema no es tu esfuerzo. Es que estás tratando como una sola cosa realidades que son distintas.</p>
+        <p>Tu vida familiar no se mueve con la misma lógica que tu trabajo. Y tu trabajo de hoy no es lo mismo que tu desarrollo profesional a largo plazo.</p>
+        <p>Antes de priorizar, hay que distinguir… <span class="accent">separar lo que no es igual, para ver por fin dónde está el foco real.</span></p>
+      </div>
+    </div>
+
+    <!-- PANEL 3 -->
+    <div class="story-panel" id="story-3">
+      <div class="story-eyebrow"><span class="story-num">3</span> Tres ruedas, tres naturalezas</div>
+      <h1 class="story-title">Tu vida es la suma de <em>tres dimensiones</em>.</h1>
+      <div class="story-body">
+        <p>Cada una tiene su propia lógica, sus propias variables y su propio ritmo. Y las tres están conectadas: cuando una se desequilibra, las otras dos lo sienten antes de que tú lo notes.</p>
+      </div>
+      <div class="story-diagram" id="storyMiniWheels"></div>
+    </div>
+
+    <!-- PANEL 4 -->
+    <div class="story-panel" id="story-4">
+      <div class="story-eyebrow"><span class="story-num">4</span> El objetivo de hoy</div>
+      <h1 class="story-title">Antes de sostener tu compromiso… tienes que ver <em>dónde ponerlo</em>.</h1>
+      <div class="story-body">
+        <p>Fortalecer tu accountability empieza aquí. No con más disciplina, no con más motivación… con una foto honesta de las tres ruedas que sostienen tu vida.</p>
+        <p>Porque no todas piden lo mismo hoy. Una está demandando tu atención más que las otras dos, y probablemente es la que las está moviendo. Ese es el primer movimiento de tu sistema: identificar dónde enfocar tu energía, para después sostener el compromiso justo ahí.</p>
+        <p><span class="accent">No las respondas todas hoy. Empieza por una.</span></p>
+      </div>
+      <div class="story-energy-stack" id="storyEnergy"></div></div>
+    </div>
+
+  <div class="cta-fixed">
+    <button class="story-skip" id="storySkip" onclick="goTo('inicio')">Saltar la introducción</button>
+    <div class="nav-actions">
+      <button class="btn-icon-back" id="storyBack" onclick="storyNav(-1)"><i class="ti ti-arrow-left"></i></button>
+      <button class="btn-primary" id="storyNext" onclick="storyNav(1)">Continuar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PANTALLA 1: INICIO ══ -->
+<div class="screen" id="screen-inicio">
+  <div class="inicio-hero">
+    <div class="inicio-eyebrow t-label">Explora mas a detalle las 3 áreas de vida</div>
+    <h1 class="inicio-title">Punto de Partida</h1>
+  </div>
+  <div class="ruedas-section">
+    <div class="ruedas-label-wrap">
+      <div class="ruedas-label">
+        <i class="ti ti-star-filled"></i> Toca los íconos que representan los pilares que sostienen cada área
+      </div>
+    </div>
+    <div class="ruedas-grid" id="ruedas-inicio-grid"></div>
+  </div>
+  <div class="cta-fixed">
+    <div class="nav-actions">
+      <button class="btn-icon-back" onclick="goTo('historia')"><i class="ti ti-arrow-left"></i></button>
+      <button class="btn-primary" onclick="goTo('instrucciones')">Continuar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PANTALLA 2: INSTRUCCIONES ══ -->
+<div class="screen" id="screen-instrucciones">
+  <div class="instrucciones-wrap">
+    <h2 class="screen-title t-h2">¿Por dónde empezar?</h2>
+    <div class="instrucciones-texto t-body">
+      <p>Comienza eligiendo la rueda que más creas que necesitas abordar hoy. Complétala con calma… y en los siguientes días, llena las dos restantes.</p>
+      <p>Sé honesto contigo mismo: no hay respuestas correctas ni incorrectas, solo tu realidad de hoy.</p>
+    </div>
+    <div class="ruedas-selector" id="ruedas-selector"></div>
+  </div>
+  <div class="cta-fixed">
+    <div class="info-trigger" style="margin-bottom: 12px; cursor: default; color: var(--gray-text); text-align: center; max-width: 400px; line-height: 1.4;">
+      <i class="ti ti-alert-circle" style="color:var(--orange);"></i> <span style="font-size:13px">No es recomendable completar las tres el mismo día. Cada rueda merece tu atención plena.</span>
+    </div>
+    <div class="nav-actions">
+      <button class="btn-icon-back" onclick="goTo('inicio')"><i class="ti ti-arrow-left"></i></button>
+      <button class="btn-primary" id="btn-comenzar" onclick="comenzarRueda()" disabled>Comenzar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PANTALLA 3: RUEDA ══ -->
+<div class="screen" id="screen-rueda">
+  <div class="rueda-screen-wrap">
+
+    <div class="rueda-header" id="main-rueda-header">
+      <div class="rueda-header-icon" id="rh-icon-wrap"><i class="ti" id="rh-icon"></i></div>
+      <div>
+        <div class="rueda-header-name t-h2" id="rh-name"></div>
+        <div class="rueda-header-sub" id="rh-sub"></div>
+      </div>
+    </div>
+
+    <!-- Banner instrucciones: se oculta en resumen -->
+    <div class="ruedas-label-wrap" id="instrBannerWrap" style="text-align:left; margin-bottom:1.5rem; display:block;">
+      <div class="ruedas-label" id="instrBanner" style="display:flex; align-items:flex-start; padding:12px 18px; line-height:1.6;">
+        <i class="ti ti-star-filled" id="instrBannerIcon" style="margin-top:2px;"></i>
+        <span class="t-body" style="font-size:13.5px; font-weight:500;">
+          No es un juicio, es un punto de partida. Las áreas con menor puntaje no son fracasos… son señales de dónde necesitas poner tu atención y tu energía.
+          <button class="info-trigger" style="margin-left:4px; margin-top:-2px;" onclick="showTooltip('ti-info-circle','Cómo calificar','No pienses en cómo quisieras que estuviera esta área, sino en cómo está realmente hoy. Si una variable tiene subcategorías, califícalas por separado: el sistema calcula el promedio automáticamente. Si alguna subcategoría no aplica, márcala como N/A y no se incluirá en el cálculo.','#2227f7')" onmouseenter="if(window.innerWidth>=900) showTooltip('ti-info-circle','Cómo calificar','No pienses en cómo quisieras que estuviera esta área, sino en cómo está realmente hoy. Si una variable tiene subcategorías, califícalas por separado: el sistema calcula el promedio automáticamente. Si alguna subcategoría no aplica, márcala como N/A y no se incluirá en el cálculo.','#2227f7')">
+            <i class="ti ti-info-circle" style="font-size:15px;"></i>
+          </button>
+        </span>
+      </div>
+    </div>
+
+    <!-- MOBILE -->
+    <div class="mobile-var-view" id="mobileView">
+      <div class="mobile-radar-top">
+        <canvas id="mobileRadarCanvas" width="500" height="340"></canvas>
+      </div>
+      <div class="mobile-var-progress" id="mobileProgress">Variable 1 de 8</div>
+      <div class="mobile-var-progress-bar"><div class="mobile-var-progress-fill" id="mobileProgressFill"></div></div>
+      <div id="mobileVarCard"></div>
+      <div class="nav-actions" style="margin-top: 1rem;">
+        <button class="btn-icon-back" id="mobileBack" onclick="mobileNav(-1)"><i class="ti ti-arrow-left"></i></button>
+        <button class="btn-primary" id="mobileNext" onclick="mobileNav(1)">Siguiente</button>
+      </div>
+    </div>
+
+    <!-- DESKTOP -->
+    <div class="desktop-var-view" id="desktopView">
+      <div class="desktop-vars-list" id="desktopVarsList"></div>
+      <div>
+        <div class="desktop-radar-card">
+          <div class="desktop-radar-title t-h3" id="desktopRadarTitle"></div>
+          <div class="desktop-radar-hint t-body">Se actualiza en tiempo real</div>
+          <canvas id="desktopRadarCanvas" width="500" height="360"></canvas>
+          <div class="desktop-avg" id="desktopAvg" style="display:none">
+            <span class="desktop-avg-val" id="desktopAvgVal"></span>
+            <span class="desktop-avg-label t-body">promedio general</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ PANTALLA FINAL: RESUMEN (TU FOTO) ══ -->
+<div class="screen" id="screen-resumen">
+  <div class="rueda-screen-wrap">
+    <div class="resumen-wrap active" id="resumenWrap">
+      <img class="brand-logo" src="https://raw.githubusercontent.com/coach-danhd/punto-partida/main/imagotipo-N.PNG" alt="Dan Hernández Coach" onerror="this.style.display='none'">
+      <h2 class="resumen-title t-h1" id="resumenTitle">Esta es tu foto de hoy</h2>
+      <div class="resumen-cierre">
+        <p class="resumen-texto t-body">Esta es tu foto actual… refleja cómo están los pilares que sostienen esta área de tu vida. Si tu rueda no parece rueda, es señal de que necesitas hacer ajustes para enfocar tu energía. Este es el punto de partida que le dará dirección a tu accountability.</p>
+      </div>
+      <div class="resumen-radar"><canvas id="resumenRadar" width="600" height="400"></canvas></div>
+      <div class="resumen-scores" id="resumenScores"></div>
+
+      <div class="resumen-pasos">
+        <div class="resumen-pasos-title">Pasos a seguir</div>
+        <div class="t-body resumen-pasos-body">Descarga tu reporte y completa el apartado de clasificación de prioridades. Después, en los próximos días, responde las ruedas que te faltan. Si ya completaste las tres… es momento de llenar tu Tablero de Control.</div>
+      </div>
+
+      <div class="results-actions-grid">
+        <button class="btn-primary" onclick="openModal()"><i class="ti ti-download"></i> Descargar Reporte</button>
+        <button class="btn-secondary" style="grid-column: 1 / -1;" onclick="window.scrollTo(0,0); location.reload();"><i class="ti ti-refresh"></i> Iniciar de nuevo</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══ DATA ══
+const RUEDAS=[
+  {id:'persona',label:'Persona',tag:'quién soy',color:'#e94734',bg:'#fff0ee',icon:'ti-user-heart',
+   desc:'La Rueda de la Persona te habla de quién eres fuera del rol. Tus vínculos, tu salud, tu equilibrio interior. No lo que produces ni lo que sabes: lo que eres cuando no estás trabajando. Es el fundamento de todo lo demás… y casi nunca lo tratamos como tal.',
+   vars:[
+    {name:'Familia',       icon:'ti-home-heart', brief:'Calidad de tus vínculos con quienes son tu familia.',           desc:'¿Qué tan satisfecho estoy con la calidad de mis relaciones familiares?',score:1,subs:[]},
+    {name:'Pareja',        icon:'ti-heart',      brief:'El estado real de tu relación amorosa hoy.',                    desc:'¿Cómo vivo mi relación de pareja hoy?',score:1,subs:[]},
+    {name:'Amigos',        icon:'ti-users',      brief:'Qué tan presentes y significativas son tus amistades.',         desc:'¿Tengo amistades significativas y tiempo real para cultivarlas?',score:1,subs:[]},
+    {name:'Mi salud',      icon:'ti-heartbeat',  brief:'Tu bienestar físico, mental y emocional como un todo.',         desc:'¿Cómo estoy cuidando mi cuerpo, mi mente y mis emociones?',score:1,subs:[
+      {name:'Física',score:1,na:true},{name:'Mental',score:1,na:true},{name:'Emocional',score:1,na:true}]},
+    {name:'Mi seguridad',  icon:'ti-shield',     brief:'Las bases materiales que te dan tranquilidad y estabilidad.',   desc:'¿Siento que tengo bases sólidas que me dan estabilidad y tranquilidad?',score:1,subs:[
+      {name:'Hogar',score:1,na:true},{name:'Ahorros',score:1,na:true},{name:'Estabilidad de ingresos',score:1,na:true}]},
+    {name:'Espiritualidad',icon:'ti-sun',        brief:'Tu conexión con algo más grande que le da sentido a tu vida.',  desc:'¿Tengo una práctica o conexión que le da sentido profundo a mi vida?',score:1,subs:[]},
+    {name:'Descanso',      icon:'ti-moon',       brief:'Si realmente te recuperas física y mentalmente.',               desc:'¿Descanso de verdad? ¿Me recupero física y mentalmente?',score:1,subs:[]},
+    {name:'Tiempo libre',  icon:'ti-beach',      brief:'El espacio que tienes para hacer lo que genuinamente disfrutas.',desc:'¿Tengo espacio para hacer lo que disfruto fuera de mis obligaciones?',score:1,subs:[
+      {name:'Hobbies',score:1,na:true},{name:'Vacaciones y viajes',score:1,na:true}]},
+  ]},
+  {id:'trabajo',label:'Trabajo',tag:'cómo ejecuto y produzco',color:'#2227f7',bg:'#eeeeff',icon:'ti-briefcase',
+   desc:'La Rueda del Trabajo te habla de tu experiencia concreta en el trabajo que sostienes hoy. Tus ingresos, tu desempeño, la forma en que te diriges siendo tú el máximo responsable. Es el punto de contacto diario entre tu persona y tu profesión. Cuando algo falla aquí, los otros dos mundos lo sienten de inmediato.',
+   vars:[
+    {name:'Ingresos',        icon:'ti-coin',       brief:'Tu satisfacción con lo que recibes económicamente.',             desc:'¿Mis ingresos reflejan justamente el valor real que genero y el nivel de responsabilidad que asumo?',score:1,subs:[]},
+    {name:'Plan de carrera', icon:'ti-stairs-up',  brief:'Si ves posibilidades reales de crecer y escalar.',               desc:'¿Tengo una estrategia clara para desarrollarme y escalar mi negocio, mi impacto y mi evolución profesional a largo plazo?',score:1,subs:[]},
+    {name:'Mi desempeño',    icon:'ti-award',      brief:'Qué tan orgulloso estás de cómo ejecutas tu trabajo.',            desc:'¿Estoy orgulloso de la calidad de mis resultados, de mi ejecución y de cómo me adapto a los retos?',score:1,subs:[]},
+    {name:'Reconocimiento',  icon:'ti-star',       brief:'Si tu autoridad y tu trabajo son reconocidos por tu entorno.',    desc:'¿El mercado, mis clientes y mis stakeholders (socios, junta o comunidad) reconocen mi autoridad y el valor de mi trabajo?',score:1,subs:[]},
+    {name:'Mis funciones',   icon:'ti-list-check', brief:'Si enfocas tu tiempo en lo que de verdad genera valor.',          desc:'¿Estoy enfocando mi tiempo en decisiones y acciones de alto valor?',score:1,subs:[]},
+    {name:'Ambiente laboral',icon:'ti-building',   brief:'Si diseñaste un entorno que protege tu bienestar.',               desc:'¿He diseñado un entorno, estructura y límites de trabajo que protegen mi bienestar físico y mental?',score:1,subs:[]},
+    {name:'La empresa',      icon:'ti-flag',       brief:'Tu alineación con el rumbo, la cultura y los valores del negocio.',desc:'¿El rumbo, la cultura y los valores del negocio siguen estando cien por ciento alineados con mi visión de vida?',score:1,subs:[]},
+    {name:'Mi jefe',         icon:'ti-user-star',  brief:'Cómo te lideras a ti mismo siendo el máximo responsable.',        desc:'Siendo el máximo responsable, ¿me estoy liderando con disciplina y enfoque, exigiéndome resultados sin caer en la auto-explotación?',score:1,subs:[]},
+  ]},
+  {id:'profesion',label:'Profesión',tag:'para qué sirvo',color:'#ff773b',bg:'#fff4ee',icon:'ti-rocket',
+   desc:'La Rueda de la Profesión te habla del profesional que estás construyendo a largo plazo. No el trabajo que tienes hoy, sino tu vocación, tu conocimiento, tus habilidades y tu impacto. Puedes tener un buen trabajo hoy y estar completamente estancado en tu desarrollo profesional. Esta rueda lo revela.',
+   vars:[
+    {name:'Mi pasión vocacional',icon:'ti-flame',        brief:'Si lo que haces conecta con lo que te apasiona y te da sentido.',    desc:'¿Lo que hago profesionalmente conecta con lo que me apasiona y me da sentido?',score:1,subs:[]},
+    {name:'Mi conocimiento',     icon:'ti-book',         brief:'Si estás invirtiendo en seguir aprendiendo y creciendo.',            desc:'¿Estoy invirtiendo en seguir aprendiendo y expandiendo lo que sé?',score:1,subs:[
+      {name:'Formación formal',score:1,na:true},{name:'Autoestudio',score:1,na:true},{name:'Asistencia Estratégica 1:1',score:1,na:true}]},
+    {name:'Mis habilidades',     icon:'ti-tool',         brief:'Si estás desarrollando y aprovechando tus talentos al máximo.',      desc:'¿Estoy desarrollando y aprovechando mis talentos al máximo?',score:1,subs:[]},
+    {name:'Mi determinación',    icon:'ti-mountain',     brief:'Tu capacidad de mantenerte enfocado ante los obstáculos.',           desc:'¿Me mantengo enfocado y constante cuando enfrento obstáculos?',score:1,subs:[]},
+    {name:'Mi autoconfianza',    icon:'ti-crown',        brief:'Si crees genuinamente en tu capacidad de lograr lo que te propones.',desc:'¿Creo genuinamente en mi capacidad para lograr lo que me propongo?',score:1,subs:[]},
+    {name:'Mi contribución a la sociedad',     icon:'ti-world',        brief:'El impacto positivo que generas más allá de ti mismo.',              desc:'¿Lo que hago genera un impacto positivo más allá de mí mismo?',score:1,subs:[]},
+    {name:'Mis retos',           icon:'ti-target-arrow',brief:'Si tienes metas que te desafían y te hacen crecer.',                desc:'¿Tengo metas que me desafían y me hacen crecer?',score:1,subs:[]},
+    {name:'Mi red de contactos', icon:'ti-network',      brief:'La calidad de relaciones profesionales que te nutren y abren puertas.',desc:'¿Cuento con relaciones profesionales que me nutren y abren puertas?',score:1,subs:[]},
+  ]}
+];
+
+// ══ STATE ══
+let currentScreen='portada', selectedRuedaIdx=null, activeMobileVar=0, ruedaCompleted=false;
+let storyStep=0;
+const STORY_TOTAL=4;
+
+function ruedaFullName(r){return r.id==='trabajo'?'Rueda del Trabajo':'Rueda de la '+r.label}
+
+// ══ COMPARTIR ══
+function shareReport() {
+  if (navigator.share) {
+    navigator.share({
+      title: 'Punto de Partida',
+      text: 'Te invito a descubrir tu diagnóstico en Punto de Partida de Dan Hernández Coach.',
+      url: window.location.href
+    }).catch(console.error);
+  } else {
+    alert('Copia este enlace para compartir la herramienta: ' + window.location.href);
+  }
+}
+
+// ══ NAV ══
+const MAIN_SCREENS=['portada','historia','inicio','instrucciones','rueda','resumen'];
+function renderGlobalDots(screen){
+  const wrap=document.getElementById('globalDots'); if(!wrap) return;
+  // En Historia ya se muestra su propio indicador de 4 pasos en el mismo lugar
+  if(screen==='historia'){ wrap.style.display='none'; return; }
+  const idx=MAIN_SCREENS.indexOf(screen);
+  if(idx===-1){ wrap.style.display='none'; return; }
+  wrap.style.display='flex';
+  wrap.innerHTML=MAIN_SCREENS.map((s,i)=>`<div class="story-dot${i===idx?' active':''}"></div>`).join('');
+}
+function goTo(screen){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const el=document.getElementById('screen-'+screen); if(el)el.classList.add('active');
+  currentScreen=screen;
+
+  // Hooks al entrar
+  if(screen==='historia') renderStory();
+  renderGlobalDots(screen);
+
+  window.scrollTo(0,0);
+}
+
+// Fin del diagnóstico: pasa directo a la foto de resultados
+function finalizarRueda(){ ruedaCompleted=true; if(selectedRuedaIdx!==null) showResumen(selectedRuedaIdx); }
+
+// ══ STORYTELLING ══
+function renderStory(){
+  document.querySelectorAll('.story-panel').forEach((p,i)=>p.classList.toggle('active',i===storyStep));
+  const dots=document.getElementById('storyDots');
+  if(dots) dots.innerHTML=Array.from({length:STORY_TOTAL},(_,i)=>`<div class="story-dot${i===storyStep?' active':''}"></div>`).join('');
+  // Botón de regresar: oculto solo en el panel 1
+  const back=document.getElementById('storyBack');
+  if(back){ if(storyStep===0){back.style.display='none';} else {back.style.display='';back.style.visibility='visible';} }
+  const next=document.getElementById('storyNext'); if(next) next.textContent=storyStep===STORY_TOTAL-1?'Descubrir mis tres ruedas':'Continuar';
+  // "Saltar la introducción" solo en el panel 1
+  const skip=document.getElementById('storySkip'); if(skip) skip.style.display=storyStep===0?'block':'none';
+  if(storyStep===0) buildStorySignature();
+  if(storyStep===2) buildStoryMiniWheels();
+  if(storyStep===3) buildStoryEnergy();
+}
+function storyNav(dir){
+  const next=storyStep+dir;
+  if(next<0) return;
+  if(next>=STORY_TOTAL){ goTo('inicio'); return; }
+  storyStep=next; renderStory(); window.scrollTo({top:0,behavior:'smooth'});
+}
+// Entrar a Historia siempre desde el panel 1
+function empezarHistoria(){ storyStep=0; goTo('historia'); }
+// Círculo animado en loop: se dibuja, se mantiene, se desdibuja… y repite
+function loopCircleSVG(cx,cy,rr,c,i){
+  const C=(2*Math.PI*rr).toFixed(1);
+  return `<circle cx="${cx}" cy="${cy}" r="${rr}" fill="${c}" fill-opacity="0.10" stroke="${c}" stroke-width="2.5" stroke-dasharray="${C}" stroke-dashoffset="${C}" style="--c:${C};animation:ringLoop 5.5s ease-in-out ${(i*0.5).toFixed(2)}s infinite"/>`;
+}
+function tresCirculos(rr){
+  const cx=[95,160,127.5], cy=[92,92,150], cols=['#e94734','#2227f7','#ff773b'];
+  const circles=cx.map((x,i)=>loopCircleSVG(x,cy[i],rr,cols[i],i)).join('');
+  return `<svg viewBox="0 0 255 210" xmlns="http://www.w3.org/2000/svg">${circles}</svg>`;
+}
+function buildStorySignature(){
+  const wrap=document.getElementById('storySignature'); if(!wrap||wrap.dataset.done) return;
+  wrap.dataset.done='1'; wrap.innerHTML=tresCirculos(54);
+}
+function buildPortadaHero(){
+  const wrap=document.getElementById('portadaHero'); if(!wrap||wrap.dataset.done) return;
+  wrap.dataset.done='1'; wrap.innerHTML=tresCirculos(54);
+}
+// Panel 3: los tres círculos animados en loop, con título y subtítulo junto a cada uno
+function buildStoryMiniWheels(){
+  const wrap=document.getElementById('storyMiniWheels'); if(!wrap) return;
+  const cx=[112,188,150], cy=[110,110,168], cols=['#e94734','#2227f7','#ff773b'], rr=56;
+  const circles=cx.map((x,i)=>loopCircleSVG(x,cy[i],rr,cols[i],i)).join('');
+  const svg=`<svg viewBox="0 0 300 268" xmlns="http://www.w3.org/2000/svg">${circles}</svg>`;
+  const label=(r,pos)=>`<div class="mw-label mw-label-${pos}" style="color:${r.color}"><span class="mw-label-name">${r.label}</span><span class="mw-label-tag">${r.tag}</span></div>`;
+  wrap.innerHTML=`<div class="mini-wheels-grid">
+    ${label(RUEDAS[0],'left')}
+    <div class="mw-svg">${svg}</div>
+    ${label(RUEDAS[1],'right')}
+    ${label(RUEDAS[2],'bottom')}
+  </div>`;
+}
+// Panel 4: una sola tarjeta de energía (línea punteada = hoy, barra rellena = demandada)
+function buildStoryEnergy(){
+  const wrap=document.getElementById('storyEnergy'); if(!wrap) return;
+  const data=[
+    ['Personal',5,40,'#e94734'],
+    ['Trabajo',80,35,'#2227f7'],
+    ['Profesión',10,25,'#ff773b']
+  ]; // [nombre, % hoy, % demandada, color]
+  wrap.innerHTML=`<div class="story-energy">
+    <div class="energy-legend">
+      <span class="energy-legend-item"><span class="energy-swatch energy-swatch-dashed"></span>Energía que ejerces hoy</span>
+      <span class="energy-legend-item"><span class="energy-swatch energy-swatch-filled"></span>Energía demandada hoy</span>
+    </div>
+    ${data.map(([n,hoy,dem,c])=>`
+      <div class="energy-cat">
+        <div class="energy-cat-name">${n}</div>
+        <div class="energy-row"><div class="energy-track"><div class="energy-fill-dashed" data-w="${hoy}" style="border-color:${c}"></div></div><div class="energy-pct" style="color:${c}">${hoy}%</div></div>
+        <div class="energy-row"><div class="energy-track"><div class="energy-fill" data-w="${dem}" style="background:${c}"></div></div><div class="energy-pct" style="color:${c}">${dem}%</div></div>
+      </div>`).join('')}
+  </div>`;
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    wrap.querySelectorAll('.energy-fill, .energy-fill-dashed').forEach(f=>{ f.style.width=f.dataset.w+'%'; });
+  }));
+}
+
+// ══ TOOLTIP ══
+function showTooltip(icon,name,desc,color){
+  document.getElementById('tt-icon').className='ti '+icon;
+  document.getElementById('tt-icon-wrap').style.cssText=`background:${color}22;color:${color}`;
+  document.getElementById('tt-name').textContent=name;
+  document.getElementById('tt-desc').textContent=desc;
+  document.getElementById('tooltipOverlay').classList.add('open');
+}
+function closeTooltip(e){
+  if(!e||e.target===document.getElementById('tooltipOverlay') || e.target.closest('.tooltip-close-x'))
+    document.getElementById('tooltipOverlay').classList.remove('open');
+}
+
+// ══ SCORE ══
+function canProceed(ridx, vidx) {
+  const v = RUEDAS[ridx].vars[vidx];
+  if (!v.subs || v.subs.length === 0) return true;
+  return v.subs.some(s => !s.na);
+}
+
+function calcScore(v){
+  if(!v.subs||v.subs.length===0)return v.score;
+  const a=v.subs.filter(s=>!s.na);
+  if(a.length===0)return 0;
+  const avg=a.reduce((x,b)=>x+b.score,0)/a.length;
+  v.score=Math.round(avg*10)/10; return v.score;
+}
+
+// ══ SLIDER TRACK ══
+function getTrackBgValue(val, color) {
+  return `linear-gradient(to right, ${color} ${(val-1)/9*100}%, var(--gray-mid) ${(val-1)/9*100}%)`;
+}
+function updateSliderTrack(el, color) {
+  if(!el) return;
+  el.style.background = getTrackBgValue(el.value, color);
+}
+
+// ══ RADAR ══
+function drawRadar(canvas,vars,color,showLabels,activeIndex=-1,labelOpts={}){
+  const dpr=window.devicePixelRatio||1;
+  const W=canvas.offsetWidth||parseInt(canvas.getAttribute('width'))||400;
+  const H=canvas.offsetHeight||parseInt(canvas.getAttribute('height'))||300;
+  canvas.width=W*dpr; canvas.height=H*dpr;
+  const ctx=canvas.getContext('2d'); ctx.scale(dpr,dpr);
+  const cx=W/2,cy=H/2;
+  // Aumentamos el margen lateral de forma contundente (W-180 y H-80) para dar espacio a las etiquetas externas
+  const R=showLabels?Math.min(W-180,H-80)/2:Math.min(W,H)/2 - 12;
+  const n=vars.length;
+  ctx.clearRect(0,0,W,H);
+
+  // Dibujar Anillos (Líneas negras)
+  for(let ring=2;ring<=10;ring+=2){
+    ctx.beginPath();
+    for(let i=0;i<n;i++){const a=(i/n)*Math.PI*2-Math.PI/2,r=(ring/10)*R;i===0?ctx.moveTo(cx+Math.cos(a)*r,cy+Math.sin(a)*r):ctx.lineTo(cx+Math.cos(a)*r,cy+Math.sin(a)*r)}
+    ctx.closePath();ctx.strokeStyle='rgba(0,0,0,0.4)';ctx.lineWidth=1.5;ctx.stroke();
+  }
+
+  // Dibujar Ejes (Líneas negras más gruesas)
+  for(let i=0;i<n;i++){const a=(i/n)*Math.PI*2-Math.PI/2;ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+Math.cos(a)*R,cy+Math.sin(a)*R);ctx.strokeStyle='rgba(0,0,0,0.8)';ctx.lineWidth=2.0;ctx.stroke()}
+
+  // Dibujar relleno
+  ctx.beginPath();
+  for(let i=0;i<n;i++){const a=(i/n)*Math.PI*2-Math.PI/2,sc=calcScore(vars[i]),r=(sc/10)*R;i===0?ctx.moveTo(cx+Math.cos(a)*r,cy+Math.sin(a)*r):ctx.lineTo(cx+Math.cos(a)*r,cy+Math.sin(a)*r)}
+  ctx.closePath();ctx.fillStyle=color+'28';ctx.fill();ctx.strokeStyle=color;ctx.lineWidth=2.5;ctx.stroke();
+  for(let i=0;i<n;i++){const a=(i/n)*Math.PI*2-Math.PI/2,sc=calcScore(vars[i]),r=(sc/10)*R;ctx.beginPath();ctx.arc(cx+Math.cos(a)*r,cy+Math.sin(a)*r,4,0,Math.PI*2);ctx.fillStyle=color;ctx.fill()}
+
+  // Dibujar Etiquetas (Externas y Condicionales)
+  if(showLabels){
+    const labelSize=labelOpts.size||10.5;
+    const activeLabelSize=labelOpts.activeSize||12.5;
+    const labelWeight=labelOpts.weight||'600';
+    const activeLabelWeight=labelOpts.activeWeight||'bold';
+    const lineGap=Math.round(labelSize*0.7);
+    for(let i=0;i<n;i++){
+      const a=(i/n)*Math.PI*2-Math.PI/2;
+      const cosA = Math.cos(a);
+      const sinA = Math.sin(a);
+
+      const lx = cx + cosA * (R + 15);
+      const ly = cy + sinA * (R + 15);
+
+      // Alineación horizontal dinámica
+      if (cosA > 0.1) ctx.textAlign = 'left';
+      else if (cosA < -0.1) ctx.textAlign = 'right';
+      else ctx.textAlign = 'center';
+
+      // Alineación vertical dinámica
+      if (sinA > 0.1) ctx.textBaseline = 'top';
+      else if (sinA < -0.1) ctx.textBaseline = 'bottom';
+      else ctx.textBaseline = 'middle';
+
+      // Estilo condicional para la variable activa
+      if (i === activeIndex) {
+        ctx.fillStyle = color;
+        ctx.font = `${activeLabelWeight} ${activeLabelSize}px Open Sans,sans-serif`;
+      } else {
+        ctx.fillStyle = 'rgba(0,0,0,0.7)';
+        ctx.font = `${labelWeight} ${labelSize}px Open Sans,sans-serif`;
+      }
+
+      const words=vars[i].name.split(' ');
+      if(words.length<=2){
+        ctx.fillText(vars[i].name,lx,ly);
+      } else {
+        const mid=Math.ceil(words.length/2);
+        const line1 = words.slice(0,mid).join(' ');
+        const line2 = words.slice(mid).join(' ');
+
+        // Ajuste de altura para 2 líneas evitando que entren al gráfico
+        if (ctx.textBaseline === 'bottom') {
+            ctx.fillText(line1, lx, ly - lineGap*2);
+            ctx.fillText(line2, lx, ly);
+        } else if (ctx.textBaseline === 'top') {
+            ctx.fillText(line1, lx, ly);
+            ctx.fillText(line2, lx, ly + lineGap*2);
+        } else {
+            ctx.fillText(line1, lx, ly - lineGap);
+            ctx.fillText(line2, lx, ly + lineGap);
+        }
+      }
+    }
+  }
+}
+
+// ══ MAPA CELULAR ══
+function buildCelularSVG(r, containerId){
+  const S=240, cx=S/2, cy=S/2, RC=28, RV=76, n=r.vars.length;
+  const wrap=document.getElementById(containerId); if(!wrap)return;
+
+  const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+  svg.setAttribute('viewBox',`0 0 ${S} ${S}`);
+  svg.style.cssText='width:100%;max-width:260px;overflow:visible';
+
+  // Líneas
+  r.vars.forEach((_,i)=>{
+    const a=(i/n)*Math.PI*2-Math.PI/2;
+    const x=cx+Math.cos(a)*RV, y=cy+Math.sin(a)*RV;
+    const line=document.createElementNS('http://www.w3.org/2000/svg','line');
+    line.setAttribute('x1',cx);line.setAttribute('y1',cy);
+    line.setAttribute('x2',x);line.setAttribute('y2',y);
+    line.setAttribute('stroke',r.color);line.setAttribute('stroke-width','1.2');line.setAttribute('stroke-opacity','0.25');
+    svg.appendChild(line);
+  });
+
+  // Nodo central
+  const cc=document.createElementNS('http://www.w3.org/2000/svg','circle');
+  cc.setAttribute('cx',cx);cc.setAttribute('cy',cy);cc.setAttribute('r',RC);cc.setAttribute('fill',r.color);
+  svg.appendChild(cc);
+
+  const foC=document.createElementNS('http://www.w3.org/2000/svg','foreignObject');
+  foC.setAttribute('x',cx-RC);foC.setAttribute('y',cy-RC);foC.setAttribute('width',RC*2);foC.setAttribute('height',RC*2);
+  foC.innerHTML=`<div xmlns="http://www.w3.org/1999/xhtml" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center"><i class="ti ${r.icon}" style="font-size:18px;color:white"></i></div>`;
+  svg.appendChild(foC);
+
+  // Nodos variables
+  r.vars.forEach((v,i)=>{
+    const a=(i/n)*Math.PI*2-Math.PI/2;
+    const x=cx+Math.cos(a)*RV, y=cy+Math.sin(a)*RV;
+    const g=document.createElementNS('http://www.w3.org/2000/svg','g');
+    g.style.cursor='pointer';
+
+    const circ=document.createElementNS('http://www.w3.org/2000/svg','circle');
+    circ.setAttribute('cx',x);circ.setAttribute('cy',y);circ.setAttribute('r','18');
+    circ.setAttribute('fill',r.bg);circ.setAttribute('stroke',r.color);circ.setAttribute('stroke-width','1.5');
+    g.appendChild(circ);
+
+    const fo=document.createElementNS('http://www.w3.org/2000/svg','foreignObject');
+    fo.setAttribute('x',x-18);fo.setAttribute('y',y-18);fo.setAttribute('width','36');fo.setAttribute('height','36');
+    fo.innerHTML=`<div xmlns="http://www.w3.org/1999/xhtml" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center"><i class="ti ${v.icon}" style="font-size:14px;color:${r.color}"></i></div>`;
+    g.appendChild(fo);
+
+    g.addEventListener('click',()=>showTooltip(v.icon, v.name, v.brief, r.color));
+
+    // Hover (Desktop)
+    g.addEventListener('mouseenter',(e)=>{
+      circ.setAttribute('stroke-width','2.5');
+      if(e.pointerType === 'mouse' && window.innerWidth >= 900) showTooltip(v.icon, v.name, v.brief, r.color);
+    });
+    g.addEventListener('mouseleave',()=>circ.setAttribute('stroke-width','1.5'));
+
+    svg.appendChild(g);
+  });
+
+  wrap.innerHTML=''; wrap.appendChild(svg);
+}
+
+// ══ INICIO GRID ══
+function buildInicioGrid(){
+  const grid=document.getElementById('ruedas-inicio-grid'); grid.innerHTML='';
+  RUEDAS.forEach((r,ri)=>{
+    const card=document.createElement('div'); card.className='rueda-card';
+    card.innerHTML=`
+      <div class="rueda-card-header">
+        <div class="rueda-icon-wrap" style="background:${r.bg};color:${r.color}"><i class="ti ${r.icon}"></i></div>
+        <div>
+          <div class="rueda-card-title t-h3">${r.label}</div>
+          <div class="rueda-card-sub">${r.tag}</div>
+        </div>
+      </div>
+      <div class="celular-wrap" id="celular-${ri}"></div>
+    `;
+    grid.appendChild(card);
+    setTimeout(()=>buildCelularSVG(r,`celular-${ri}`),30);
+  });
+}
+
+// ══ INSTRUCCIONES ══
+function buildInstrucciones(){
+  const sel=document.getElementById('ruedas-selector'); sel.innerHTML='';
+  RUEDAS.forEach((r,ri)=>{
+    const opt=document.createElement('div'); opt.className='rueda-option'; opt.id='opt-'+ri;
+    opt.innerHTML=`
+      <div class="rueda-option-row">
+        <div class="rueda-option-icon" style="background:${r.bg};color:${r.color}"><i class="ti ${r.icon}"></i></div>
+        <div style="flex:1">
+          <div class="rueda-option-name t-h3">${r.label}</div>
+          <div class="rueda-option-tag">${r.tag}</div>
+        </div>
+        <div class="rueda-option-check" id="check-${ri}"><i class="ti ti-check"></i></div>
+      </div>
+      <div class="rueda-option-desc t-body" id="desc-${ri}">${r.desc}</div>
+    `;
+    opt.onclick=()=>selectRueda(ri); sel.appendChild(opt);
+  });
+}
+function selectRueda(idx){
+  selectedRuedaIdx=idx;
+  RUEDAS.forEach((r,i)=>{
+    const opt=document.getElementById('opt-'+i); if(!opt)return;
+    if(i===idx){opt.classList.add('selected');opt.style.borderColor=r.color;opt.style.background=r.bg+'55'}
+    else{opt.classList.remove('selected');opt.style.borderColor='';opt.style.background=''}
+  });
+
+  const btn = document.getElementById('btn-comenzar');
+  btn.disabled=false;
+  btn.style.backgroundColor = RUEDAS[idx].color; // Color dinámico en el botón "Comenzar"
+}
+function comenzarRueda(){
+  if(selectedRuedaIdx===null)return;
+  resetRueda(selectedRuedaIdx);
+  buildRuedaScreen(selectedRuedaIdx);
+  const isDesktop=window.matchMedia('(min-width:900px)').matches;
+  document.getElementById('mobileView').style.display=isDesktop?'none':'';
+  document.getElementById('desktopView').style.display=isDesktop?'grid':'none';
+  if(isDesktop)addDesktopDoneBtn(selectedRuedaIdx);
+  goTo('rueda');
+}
+
+// ══ RUEDA RESET ══
+function resetRueda(idx){
+  const r=RUEDAS[idx];
+  r.vars.forEach(v=>{v.score=1;if(v.subs)v.subs.forEach(s=>{if(!s.na)s.score=1})});
+  activeMobileVar=0;ruedaCompleted=false;
+
+  // Mostrar banners y componentes que se ocultan en resumen
+  document.getElementById('instrBannerWrap').style.display='block';
+  document.getElementById('main-rueda-header').style.display='flex';
+  document.getElementById('resumenWrap').classList.remove('active');
+
+  // Estilizar el banner de "Califica" acorde al color de la rueda
+  document.getElementById('instrBanner').style.borderColor = r.color;
+  document.getElementById('instrBannerIcon').style.color = r.color;
+}
+
+function buildRuedaScreen(idx){
+  const r=RUEDAS[idx];
+  document.getElementById('rh-icon').className='ti '+r.icon;
+  document.getElementById('rh-icon-wrap').style.cssText=`background:${r.bg};color:${r.color}`;
+  document.getElementById('rh-name').textContent=ruedaFullName(r);
+  document.getElementById('rh-sub').textContent=r.tag;
+  document.getElementById('desktopRadarTitle').textContent=ruedaFullName(r);
+  buildMobileView(idx);
+  buildDesktopView(idx);
+}
+
+// ══ MOBILE ══
+function buildMobileView(idx){activeMobileVar=0;renderMobileVar(idx)}
+function renderMobileVar(idx){
+  const r=RUEDAS[idx],v=r.vars[activeMobileVar],total=r.vars.length;
+  document.getElementById('mobileProgress').textContent=`Variable ${activeMobileVar+1} de ${total}`;
+  const fill=document.getElementById('mobileProgressFill');
+  fill.style.width=((activeMobileVar+1)/total*100)+'%';fill.style.background=r.color;
+
+  const isLast=activeMobileVar===total-1;
+  const canGoNext=canProceed(idx, activeMobileVar);
+  const nb=document.getElementById('mobileNext');
+  nb.textContent=isLast?'Ver mi resultado':'Siguiente';
+  nb.disabled = !canGoNext;
+  nb.style.background = !canGoNext ? 'var(--gray-mid)' : (isLast ? r.color : 'var(--red)');
+
+  drawRadar(document.getElementById('mobileRadarCanvas'),r.vars,r.color,true,activeMobileVar);
+  const hasSubs=v.subs&&v.subs.length>0,sc=calcScore(v);
+  const displayScore=hasSubs?(canGoNext?(sc%1===0?sc:sc.toFixed(1)):'—'):v.score;
+  let subsHTML='';
+  if(hasSubs){
+    subsHTML=`
+    <div class="subs-wrap" id="subs-wrap-m">
+      ${v.subs.map((s,si)=>`<div class="sub-row" style="display:flex; align-items:center; gap:10px;">
+        <input type="checkbox" ${s.na?'':'checked'} onchange="toggleNA(${idx},${activeMobileVar},${si})" style="width:18px;height:18px;accent-color:var(--black);cursor:pointer;flex-shrink:0;">
+        <span class="sub-name t-body" style="flex:0 0 100px;">${s.name}</span>
+        <input type="range" class="sub-slider" min="1" max="10" step="1" value="${s.na?1:s.score}" ${s.na?'disabled':''} style="opacity:${s.na?.3:1}; background:${getTrackBgValue(s.na?1:s.score, r.color)}" oninput="updateSubMobile(${idx},${activeMobileVar},${si},this.value,this)">
+        <span class="sub-val" style="color:${r.color}; width:20px; text-align:right;" id="sv-m-${si}">${s.na?'—':s.score}</span>
+      </div>`).join('')}
+    </div>`;
+  }
+  document.getElementById('mobileVarCard').innerHTML=`
+    <div class="mobile-var-card">
+      <div class="mobile-var-top">
+        <i class="ti ${v.icon} mobile-var-icon" style="color:${r.color}"></i>
+        <div class="mobile-var-name t-h2">${v.name}</div>
+        <button class="info-trigger" onclick="showTooltip('${v.icon}','${v.name}','${v.desc.replace(/'/g,"\\'")}','${r.color}')"><i class="ti ti-info-circle"></i></button>
+      </div>
+      <div class="mobile-var-desc t-body">${v.desc}</div>
+      <div class="slider-wrap">
+        ${hasSubs
+          ?`<div style="display:flex;align-items:center;gap:12px;margin-bottom:.35rem">
+               <span class="slider-val t-h1" style="color:${r.color}" id="mobile-score-val">${displayScore}</span>
+               <span class="t-body" style="font-size:12px;color:var(--gray-text)">promedio de las subcategorías</span>
+             </div>`
+          :`<div style="display:flex; align-items:center; gap:12px;">
+               <div style="flex:1;">
+                 <div class="slider-row" style="margin-bottom:2px;">
+                   <span style="font-size:12px;color:var(--gray-text)">1</span>
+                   <input type="range" min="1" max="10" step="1" value="${v.score}" style="background:${getTrackBgValue(v.score, r.color)}" oninput="updateMainMobile(${idx},${activeMobileVar},this.value,this)">
+                   <span style="font-size:12px;color:var(--gray-text)">10</span>
+                 </div>
+                 <div class="slider-labels"><span>Muy insatisfecho</span><span>Completamente satisfecho</span></div>
+               </div>
+               <span class="slider-val t-h1" style="color:${r.color}" id="mobile-score-val">${v.score}</span>
+             </div>`
+        }
+      </div>
+      ${subsHTML}
+    </div>`;
+}
+
+function updateMainMobile(ridx,vidx,val,el){
+  RUEDAS[ridx].vars[vidx].score=parseInt(val);
+  const scoreEl=document.getElementById('mobile-score-val');if(scoreEl)scoreEl.textContent=val;
+  if(el) updateSliderTrack(el, RUEDAS[ridx].color);
+  drawRadar(document.getElementById('mobileRadarCanvas'),RUEDAS[ridx].vars,RUEDAS[ridx].color,true,vidx);
+  syncDesktopScore(ridx,vidx);
+}
+function updateSubMobile(ridx,vidx,sidx,val,el){
+  RUEDAS[ridx].vars[vidx].subs[sidx].score=parseInt(val);
+  const svEl=document.getElementById(`sv-m-${sidx}`);if(svEl)svEl.textContent=val;
+  const sc=calcScore(RUEDAS[ridx].vars[vidx]);
+  const elScore=document.getElementById('mobile-score-val');if(elScore)elScore.textContent=sc%1===0?sc:sc.toFixed(1);
+  if(el) updateSliderTrack(el, RUEDAS[ridx].color);
+  drawRadar(document.getElementById('mobileRadarCanvas'),RUEDAS[ridx].vars,RUEDAS[ridx].color,true,vidx);
+  syncDesktopScore(ridx,vidx);
+}
+function toggleNA(ridx,vidx,sidx){
+  const sub=RUEDAS[ridx].vars[vidx].subs[sidx];sub.na=!sub.na;
+  renderMobileVar(ridx);
+  drawRadar(document.getElementById('mobileRadarCanvas'),RUEDAS[ridx].vars,RUEDAS[ridx].color,true,vidx);
+}
+function mobileNav(dir){
+  const idx=selectedRuedaIdx,total=RUEDAS[idx].vars.length;
+  // If moving back on the very first variable, go to instructions
+  if (dir === -1 && activeMobileVar === 0) {
+    goTo('instrucciones');
+    return;
+  }
+  activeMobileVar+=dir;
+  if(activeMobileVar>=total){finalizarRueda();return}
+  renderMobileVar(idx);
+}
+
+// ══ DESKTOP ══
+function buildDesktopView(idx){
+  const r=RUEDAS[idx],list=document.getElementById('desktopVarsList');list.innerHTML='';
+  r.vars.forEach((v,vi)=>{
+    const hasSubs=v.subs&&v.subs.length>0;
+    const item=document.createElement('div');item.className='desktop-var-item';item.id=`dvi-${vi}`;
+    let subsHTML='';
+    if(hasSubs){
+      subsHTML=`<div class="desktop-subs">${v.subs.map((s,si)=>`
+        <div class="desktop-sub-row" style="gap:12px;">
+          <input type="checkbox" ${s.na?'':'checked'} onchange="toggleNADesktop(${idx},${vi},${si})" style="width:16px;height:16px;accent-color:var(--black);cursor:pointer;flex-shrink:0;">
+          <span class="desktop-sub-name t-body" style="flex:0 0 110px;">${s.name}</span>
+          <input type="range" class="desktop-sub-input" min="1" max="10" step="1" value="${s.na?1:s.score}" style="opacity:${s.na?.3:1}; background:${getTrackBgValue(s.na?1:s.score, r.color)}" ${s.na?'disabled':''} oninput="updateSubDesktop(${idx},${vi},${si},this.value,this)">
+          <span style="font-size:12px;font-weight:700;width:20px;text-align:right;color:${r.color}" id="dsv-${vi}-${si}">${s.na?'—':s.score}</span>
+        </div>`).join('')}</div>`;
+    }
+
+    // Hover attribute setup
+    const escapedDesc = v.desc.replace(/'/g,"\\'");
+
+    item.innerHTML=`
+      <div class="desktop-var-header">
+        <i class="ti ${v.icon} desktop-var-icon" style="color:${r.color}"></i>
+        <span class="desktop-var-name t-title">${v.name}</span>
+        <button class="info-trigger" onclick="showTooltip('${v.icon}','${v.name}','${escapedDesc}','${r.color}')" onmouseenter="if(window.innerWidth>=900) showTooltip('${v.icon}','${v.name}','${escapedDesc}','${r.color}')">
+          <i class="ti ti-info-circle"></i>
+        </button>
+        <span class="desktop-var-score t-h1" style="color:${r.color}" id="dvs-${vi}">${(hasSubs && !canProceed(idx, vi)) ? '—' : v.score}</span>
+      </div>
+      <div class="desktop-var-desc t-body">${v.desc}</div>
+      ${hasSubs
+        ?`<div style="padding:.25rem 1rem .4rem 2.8rem;font-size:11px;color:var(--gray-text)">Califica las subcategorías — el promedio se calcula automáticamente</div>${subsHTML}`
+        :`<div class="desktop-var-slider-row">
+             <span style="font-size:11px;color:var(--gray-text)">1</span>
+             <input type="range" min="1" max="10" step="1" value="${v.score}" style="background:${getTrackBgValue(v.score, r.color)}" oninput="updateMainDesktop(${idx},${vi},this.value,this)">
+             <span style="font-size:11px;color:var(--gray-text)">10</span>
+           </div>`
+      }
+    `;
+    list.appendChild(item);
+  });
+  drawRadar(document.getElementById('desktopRadarCanvas'),r.vars,r.color,true,-1);
+}
+function updateMainDesktop(ridx,vidx,val,el){
+  RUEDAS[ridx].vars[vidx].score=parseInt(val);
+  const dvs=document.getElementById(`dvs-${vidx}`);if(dvs)dvs.textContent=val;
+  if(el) updateSliderTrack(el, RUEDAS[ridx].color);
+  drawRadar(document.getElementById('desktopRadarCanvas'),RUEDAS[ridx].vars,RUEDAS[ridx].color,true,vidx);
+}
+function updateSubDesktop(ridx,vidx,sidx,val,el){
+  RUEDAS[ridx].vars[vidx].subs[sidx].score=parseInt(val);
+  const svEl=document.getElementById(`dsv-${vidx}-${sidx}`);if(svEl)svEl.textContent=val;
+  const sc=calcScore(RUEDAS[ridx].vars[vidx]);
+  const dvs=document.getElementById(`dvs-${vidx}`);if(dvs)dvs.textContent=sc%1===0?sc:sc.toFixed(1);
+  if(el) updateSliderTrack(el, RUEDAS[ridx].color);
+  drawRadar(document.getElementById('desktopRadarCanvas'),RUEDAS[ridx].vars,RUEDAS[ridx].color,true,vidx);
+}
+function toggleNADesktop(ridx,vidx,sidx){
+  const sub=RUEDAS[ridx].vars[vidx].subs[sidx];sub.na=!sub.na;
+  const svEl=document.getElementById(`dsv-${vidx}-${sidx}`);
+  if(svEl){
+    svEl.textContent=sub.na?'—':sub.score;
+    const sl=svEl.previousElementSibling;
+    if(sl&&sl.tagName==='INPUT'){
+      sl.disabled=sub.na;
+      sl.style.opacity=sub.na?.3:1;
+      sl.style.background=getTrackBgValue(sub.na?1:sub.score, RUEDAS[ridx].color);
+    }
+  }
+  const sc=calcScore(RUEDAS[ridx].vars[vidx]);
+  const dvs=document.getElementById(`dvs-${vidx}`);if(dvs)dvs.textContent=sc===0?'—':(sc%1===0?sc:sc.toFixed(1));
+  drawRadar(document.getElementById('desktopRadarCanvas'),RUEDAS[ridx].vars,RUEDAS[ridx].color,true,vidx);
+  updateDesktopDoneBtnState(ridx);
+}
+function syncDesktopScore(ridx,vidx){
+  const v=RUEDAS[ridx].vars[vidx],sc=calcScore(v);
+  const dvs=document.getElementById(`dvs-${vidx}`);if(dvs)dvs.textContent=sc===0?'—':(sc%1===0?sc:sc.toFixed(1));
+  drawRadar(document.getElementById('desktopRadarCanvas'),RUEDAS[ridx].vars,RUEDAS[ridx].color,true,vidx);
+  updateDesktopDoneBtnState(ridx);
+}
+function updateDesktopDoneBtnState(idx) {
+  const btn = document.getElementById('desktop-done-btn-action');
+  if (!btn) return;
+  const allValid = RUEDAS[idx].vars.every((v, i) => canProceed(idx, i));
+  btn.disabled = !allValid;
+  btn.style.background = allValid ? RUEDAS[idx].color : 'var(--gray-mid)';
+}
+
+function addDesktopDoneBtn(idx){
+  const list=document.getElementById('desktopVarsList');
+  const ex=document.getElementById('desktop-done-wrap');if(ex)ex.remove();
+
+  const wrap = document.createElement('div');
+  wrap.id = 'desktop-done-wrap';
+  wrap.className = 'nav-actions';
+  wrap.style.cssText = 'margin-top:1.5rem; justify-content:flex-start;';
+  wrap.innerHTML = `
+    <button class="btn-icon-back" onclick="goTo('instrucciones')"><i class="ti ti-arrow-left"></i></button>
+    <button class="btn-primary" id="desktop-done-btn-action" style="background:${RUEDAS[idx].color}" onclick="finalizarRueda()">Ver mi resultado</button>
+  `;
+  list.appendChild(wrap);
+  updateDesktopDoneBtnState(idx);
+}
+
+// ══ RESUMEN ══
+function showResumen(idx){
+  const r=RUEDAS[idx];
+  ruedaCompleted=true;
+  document.getElementById('resumenWrap').classList.add('active');
+
+  // Título con rol y color
+  const textRoles = { 'persona': 'Persona', 'trabajo': 'Trabajador', 'profesion': 'Profesionista' };
+  const roleName = textRoles[r.id] || r.label;
+  document.getElementById('resumenTitle').innerHTML = `Esta es tu foto, como <span style="color:${r.color};">${roleName}</span>, de hoy`;
+
+  // Puntajes
+  document.getElementById('resumenScores').innerHTML=r.vars.map(v=>{
+    const sc=calcScore(v);
+    return `<div class="score-pill"><i class="ti ${v.icon} score-pill-icon" style="color:${r.color}"></i><span class="score-pill-name t-body">${v.name}</span><span class="score-pill-val" style="color:${r.color}">${sc%1===0?sc:sc.toFixed(1)}</span></div>`;
+  }).join('');
+
+  goTo('resumen');
+  setTimeout(()=>drawRadar(document.getElementById('resumenRadar'),r.vars,r.color,true,-1),80);
+}
+
+// ══ MODAL ══
+function openModal(){
+  document.getElementById('input-fecha').value=new Date().toISOString().split('T')[0];
+  if(selectedRuedaIdx !== null) {
+    document.getElementById('btn-descargar-modal').style.backgroundColor = RUEDAS[selectedRuedaIdx].color;
+  }
+  document.getElementById('modalDescarga').classList.add('open');
+}
+function closeModal(e){
+  if(!e||e.target===document.getElementById('modalDescarga') || e.target.closest('.tooltip-close-x'))
+    document.getElementById('modalDescarga').classList.remove('open');
+}
+
+// ══ PDF ══
+function getLectura(s){return s>=8?'Esta área está funcionando como un recurso. Es una fortaleza desde la que puedes operar.':s>=5?'Esta área está en zona de atención. No es una crisis… pero merece energía consciente.':'Esta área está enviando una señal clara. Es probable que esté impactando otras dimensiones de tu vida. Vale la pena ponerla en primer plano.'}
+function getLecturaColor(s){return s>=8?'#1D9E75':s>=5?'#ff773b':'#e94734'}
+function hexToRgb(hex){return[parseInt(hex.slice(1,3),16),parseInt(hex.slice(3,5),16),parseInt(hex.slice(5,7),16)]}
+function tintRgb(hex,pct){
+  const[r,g,b]=hexToRgb(hex),bg=[255,252,249];
+  return[Math.round(bg[0]+(r-bg[0])*pct),Math.round(bg[1]+(g-bg[1])*pct),Math.round(bg[2]+(b-bg[2])*pct)];
+}
+
+// Rasteriza un ícono Tabler (el mismo que usa la app) a PNG para insertarlo en el PDF
+const _pdfIconCache={};
+async function pdfIcon(iconClass,color,px=120){
+  const key=iconClass+'|'+color+'|'+px;
+  if(key in _pdfIconCache) return _pdfIconCache[key];
+  if(document.fonts&&document.fonts.ready) await document.fonts.ready;
+  const el=document.createElement('i');
+  el.className='ti '+iconClass;
+  el.style.cssText=`position:fixed;left:-9999px;top:-9999px;font-size:${px}px;line-height:1;`;
+  document.body.appendChild(el);
+  const fam=getComputedStyle(el).fontFamily;
+  const ch=(getComputedStyle(el,'::before').content||'').replace(/^["']|["']$/g,'');
+  document.body.removeChild(el);
+  if(!ch||ch==='none'||ch==='normal'){_pdfIconCache[key]=null;return null;}
+  const canvas=document.createElement('canvas');
+  const scale=2;
+  canvas.width=px*scale;canvas.height=px*scale;
+  const ctx=canvas.getContext('2d');
+  ctx.scale(scale,scale);
+  ctx.font=`${px}px ${fam}`;
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillStyle=color;
+  ctx.fillText(ch,px/2,px/2+px*0.05);
+  const url=canvas.toDataURL('image/png');
+  _pdfIconCache[key]=url;
+  return url;
+}
+
+// Carga (una sola vez, con caché) las mismas tipografías de la app —Open Sans y
+// Source Serif 4— como TTF real para incrustarlas en el PDF, en vez de Helvetica.
+let _pdfFontCache=null;
+async function ensurePdfFonts(){
+  if(_pdfFontCache) return _pdfFontCache;
+  const toBase64=async(url)=>{
+    const res=await fetch(url);
+    if(!res.ok) throw new Error('font fetch failed: '+url);
+    const buf=await res.arrayBuffer();
+    let binary='';const bytes=new Uint8Array(buf);const chunk=0x8000;
+    for(let i=0;i<bytes.length;i+=chunk) binary+=String.fromCharCode.apply(null,bytes.subarray(i,i+chunk));
+    return btoa(binary);
+  };
+  const base='https://raw.githubusercontent.com/google/fonts/main/ofl/';
+  const[sans,sansItalic,serif,serifItalic]=await Promise.all([
+    toBase64(base+'opensans/OpenSans[wdth,wght].ttf'),
+    toBase64(base+'opensans/OpenSans-Italic[wdth,wght].ttf'),
+    toBase64(base+'sourceserif4/SourceSerif4[opsz,wght].ttf'),
+    toBase64(base+'sourceserif4/SourceSerif4-Italic[opsz,wght].ttf'),
+  ]);
+  _pdfFontCache={sans,sansItalic,serif,serifItalic};
+  return _pdfFontCache;
+}
+function registerPdfFonts(doc,fonts){
+  doc.addFileToVFS('AppSans.ttf',fonts.sans);doc.addFont('AppSans.ttf','AppSans','normal');
+  doc.addFileToVFS('AppSansItalic.ttf',fonts.sansItalic);doc.addFont('AppSansItalic.ttf','AppSans','italic');
+  doc.addFileToVFS('AppSerif.ttf',fonts.serif);doc.addFont('AppSerif.ttf','AppSerif','normal');
+  doc.addFileToVFS('AppSerifItalic.ttf',fonts.serifItalic);doc.addFont('AppSerifItalic.ttf','AppSerif','italic');
+}
+// AppSans/AppSerif solo tienen normal + italic incrustados (las variables de Google Fonts
+// no traen un corte "bold" separado). Para negritas se dibuja el texto dos veces con un
+// micro-desfase — el mismo truco de "negrita falsa" que usan los lectores de PDF.
+function pdfText(doc,str,x,y,opts={}){
+  if(opts.bold){
+    const o={...opts};delete o.bold;
+    const off=0.14;
+    doc.text(str,x-off,y,o);
+    doc.text(str,x+off,y,o);
+  } else {
+    doc.text(str,x,y,opts);
+  }
+}
+
+// Logo (imagotipo) para la portada y la hoja de resultados del PDF.
+let _pdfLogoCache=null;
+async function ensurePdfLogo(){
+  if(_pdfLogoCache) return _pdfLogoCache;
+  const url='https://raw.githubusercontent.com/coach-danhd/punto-partida/main/imagotipo-N.PNG';
+  const res=await fetch(url);
+  if(!res.ok) throw new Error('logo fetch failed');
+  const blob=await res.blob();
+  const dataUrl=await new Promise((resolve,reject)=>{
+    const reader=new FileReader();
+    reader.onload=()=>resolve(reader.result);
+    reader.onerror=reject;
+    reader.readAsDataURL(blob);
+  });
+  const{w,h}=await new Promise((resolve,reject)=>{
+    const img=new Image();
+    img.onload=()=>resolve({w:img.naturalWidth,h:img.naturalHeight});
+    img.onerror=reject;
+    img.src=dataUrl;
+  });
+  _pdfLogoCache={dataUrl,ratio:w/h};
+  return _pdfLogoCache;
+}
+
+async function generarPDF(mobile){
+  const nombre=document.getElementById('input-nombre').value.trim()||'Sin nombre';
+  const fecha=document.getElementById('input-fecha').value||new Date().toISOString().split('T')[0];
+  const fechaFmt=new Date(fecha+'T12:00:00').toLocaleDateString('es-MX',{year:'numeric',month:'long',day:'numeric'});
+  const idx=selectedRuedaIdx,r=RUEDAS[idx];
+  const{jsPDF}=window.jspdf;
+  // Versión móvil: formato angosto con márgenes de 0.5cm, fluye a más páginas (hasta 6)
+  // para que el texto no se achique. Versión escritorio: tamaño carta clásico, más compacta.
+  const pw=mobile?100:216, ph=mobile?210:279, margin=mobile?5:18;
+  const doc=new jsPDF({orientation:'portrait',unit:'mm',format:[pw,ph]});
+  const UW=pw-margin*2;
+  const[cr,cg,cb]=hexToRgb(r.color);
+  const RED=[233,71,52],BLUE=[34,39,247],ORANGE=[255,119,59],BLACKC=[29,29,27];
+  const GRAYTEXT=[107,103,96],GRAYMID=[217,213,207],GRAYLIGHT=[243,240,236],CREAM=[255,252,249];
+
+  // Tipografías reales de la app (Open Sans / Source Serif 4). Si por algún motivo
+  // no se pueden cargar (sin conexión, etc.), se usa una alternativa segura.
+  let FSANS='helvetica',FSERIF='times';
+  try{
+    const fonts=await ensurePdfFonts();
+    registerPdfFonts(doc,fonts);
+    FSANS='AppSans';FSERIF='AppSerif';
+  }catch(e){}
+  let logo=null;
+  try{ logo=await ensurePdfLogo(); }catch(e){}
+  const drawLogo=(centerX,topY,h=9)=>{
+    if(!logo) return 0;
+    const w=h*logo.ratio;
+    doc.addImage(logo.dataUrl,'PNG',centerX-w/2,topY,w,h);
+    return h;
+  };
+
+  const bgPage=()=>{doc.setFillColor(...CREAM);doc.rect(0,0,pw,ph,'F');};
+  // El número de página se estampa al final (stampPageNumbers) porque el contenido
+  // puede desbordarse a páginas extra y solo entonces se conoce el total real.
+  const footer=()=>{
+    const fy=ph-(mobile?9:12);
+    doc.setDrawColor(...GRAYMID);doc.setLineWidth(0.2);doc.line(margin,fy-(mobile?3.5:4),pw-margin,fy-(mobile?3.5:4));
+    doc.setFont(FSANS,'normal');doc.setFontSize(mobile?6:7);doc.setTextColor(150,148,144);
+    doc.text('Punto de Partida — Dan Hernández Coach',margin,fy);
+    doc.text('hola@coach-danhd.com',margin,fy+(mobile?3.2:4));
+  };
+  const stampPageNumbers=()=>{
+    const total=doc.internal.getNumberOfPages();
+    for(let p=1;p<=total;p++){
+      doc.setPage(p);
+      doc.setFont(FSANS,'normal');doc.setFontSize(mobile?6:7);doc.setTextColor(150,148,144);
+      doc.text(mobile?`Pág. ${p}/${total}`:`Página ${p} de ${total}`,pw-margin,ph-(mobile?9:12),{align:'right'});
+    }
+  };
+  const runningHeader=()=>{
+    let hy=margin+(mobile?7:6);
+    const chip=mobile?5.5:7;
+    doc.setFillColor(cr,cg,cb);doc.roundedRect(margin,hy-chip*0.78,chip,chip,1.2,1.2,'F');
+    doc.setFont(FSERIF,'normal');doc.setFontSize(mobile?9.5:11);doc.setTextColor(...BLACKC);
+    pdfText(doc,ruedaFullName(r),margin+chip+2,hy,{bold:true});
+    doc.setFont(FSANS,'italic');doc.setFontSize(mobile?7:8);doc.setTextColor(...GRAYTEXT);
+    doc.text(r.tag,margin+chip+2,hy+(mobile?3.7:4.5));
+    hy+=mobile?7:9;
+    doc.setDrawColor(...GRAYMID);doc.setLineWidth(0.3);doc.line(margin,hy,pw-margin,hy);
+    return hy+(mobile?7:8);
+  };
+
+  bgPage();
+
+  if(mobile){
+    // ══════════ HOJA 1 (MÓVIL) — PORTADA ══════════
+    let y=margin+4;
+    y+=drawLogo(pw/2,y,17)+8;
+
+    const heroCy=y+11,rr=10,redCx=pw/2-5.5,blueCx=pw/2+5.5,orangeCx=pw/2,orangeCy=heroCy+8;
+    const circPos=[[redCx,heroCy,RUEDAS[0].color],[blueCx,heroCy,RUEDAS[1].color],[orangeCx,orangeCy,RUEDAS[2].color]];
+    circPos.forEach(([cx,cy,col])=>{doc.setFillColor(...tintRgb(col,0.12));doc.circle(cx,cy,rr,'F');});
+    circPos.forEach(([cx,cy,col])=>{doc.setDrawColor(...hexToRgb(col));doc.setLineWidth(0.5);doc.circle(cx,cy,rr,'S');});
+    y=orangeCy+rr+9;
+
+    doc.setFont(FSERIF,'normal');doc.setFontSize(18);doc.setTextColor(...BLACKC);
+    pdfText(doc,'3 ruedas,',pw/2,y,{align:'center',bold:true});y+=8;
+    doc.setFont(FSERIF,'italic');doc.setFontSize(18);doc.setTextColor(...RED);
+    doc.text('un objetivo',pw/2,y,{align:'center'});y+=10;
+
+    doc.setFont(FSANS,'normal');doc.setFontSize(8.5);doc.setTextColor(...GRAYTEXT);
+    const sub=doc.splitTextToSize('Herramienta para comenzar a priorizar y enfocar tu energía, para sostener tu determinación, compromiso y motivación.',UW-6);
+    doc.text(sub,pw/2,y,{align:'center'});y+=sub.length*4.3+7;
+
+    const boxW=UW,boxX=margin;
+    doc.setFont(FSANS,'normal');doc.setFontSize(8);
+    const badgeTxt=doc.splitTextToSize('Este es el primer paso para desarrollar tu estrategia de accountability y desarrollo personal.',boxW-9);
+    const badgeH=badgeTxt.length*4+7;
+    doc.setFillColor(...GRAYLIGHT);doc.setDrawColor(...GRAYMID);doc.setLineWidth(0.25);
+    doc.roundedRect(boxX,y,boxW,badgeH,2,2,'FD');
+    doc.setFillColor(...BLUE);doc.rect(boxX,y,1.2,badgeH,'F');
+    doc.setTextColor(...BLACKC);
+    doc.text(badgeTxt,boxX+5.5,y+5.5);
+    y+=badgeH+7;
+
+    const cardH=40;
+    let iy=y+9;
+    doc.setFont(FSANS,'normal');doc.setFontSize(6.5);doc.setTextColor(...GRAYTEXT);
+    pdfText(doc,'COACHEE',boxX+6,iy,{bold:true});iy+=5;
+    doc.setFont(FSERIF,'normal');doc.setFontSize(10.5);doc.setTextColor(...BLACKC);
+    pdfText(doc,nombre,boxX+6,iy,{bold:true});iy+=8.5;
+    doc.setFont(FSANS,'normal');doc.setFontSize(6.5);doc.setTextColor(...GRAYTEXT);
+    pdfText(doc,'FECHA',boxX+6,iy,{bold:true});iy+=5;
+    doc.setFont(FSANS,'normal');doc.setFontSize(9.5);doc.setTextColor(...BLACKC);
+    doc.text(fechaFmt,boxX+6,iy);iy+=8.5;
+    doc.setFont(FSANS,'normal');doc.setFontSize(6.5);doc.setTextColor(...GRAYTEXT);
+    pdfText(doc,'RUEDA SELECCIONADA',boxX+6,iy,{bold:true});iy+=5;
+    const ruedaIconUrl=await pdfIcon(r.icon,r.color,120);
+    if(ruedaIconUrl) doc.addImage(ruedaIconUrl,'PNG',boxX+6,iy-3.6,4.5,4.5);
+    doc.setFont(FSERIF,'normal');doc.setFontSize(10.5);doc.setTextColor(cr,cg,cb);
+    pdfText(doc,ruedaFullName(r),boxX+6+(ruedaIconUrl?6:0),iy,{bold:true});
+    y+=cardH;
+
+    footer();
+
+    // ══════════ HOJA 2 (MÓVIL) — LA VENTANA DEL REPORTE ══════════
+    doc.addPage();bgPage();
+    y=runningHeader();
+    y+=4;
+
+    const textRoles={persona:'Persona',trabajo:'Trabajador',profesion:'Profesionista'};
+    const roleName=textRoles[r.id]||r.label;
+    doc.setFont(FSERIF,'normal');doc.setFontSize(12);doc.setTextColor(...BLACKC);
+    pdfText(doc,'Esta es tu foto, como',pw/2,y,{align:'center',bold:true});y+=6;
+    const suf=', de hoy';
+    doc.setFontSize(12);
+    const roleW=doc.getTextWidth(roleName),sufW=doc.getTextWidth(suf);
+    let tx=pw/2-(roleW+sufW)/2;
+    doc.setTextColor(cr,cg,cb);pdfText(doc,roleName,tx,y,{bold:true});tx+=roleW;
+    doc.setTextColor(...BLACKC);pdfText(doc,suf,tx,y,{bold:true});
+    y+=8;
+
+    doc.setFont(FSANS,'normal');doc.setFontSize(8.5);doc.setTextColor(60,58,55);
+    const cierre=doc.splitTextToSize('Esta es tu foto actual… refleja cómo están los pilares que sostienen esta área de tu vida. Si tu rueda no parece rueda, es señal de que necesitas hacer ajustes para enfocar tu energía. Este es el punto de partida que le dará dirección a tu accountability.',UW-6);
+    doc.text(cierre,pw/2,y,{align:'center'});y+=cierre.length*4.1+6;
+
+    const rc2=document.createElement('canvas');rc2.width=600;rc2.height=600;
+    drawRadar(rc2,r.vars,r.color,true,-1,{size:14,weight:'bold',activeSize:14,activeWeight:'bold'});
+    const radarSize=Math.min(78,UW);
+    doc.addImage(rc2.toDataURL('image/png'),'PNG',(pw-radarSize)/2,y,radarSize,radarSize);
+    footer();
+
+    // ══════════ HOJA 3 (MÓVIL) — GRÁFICOS DE RESULTADOS POR CATEGORÍA ══════════
+    doc.addPage();bgPage();
+    y=runningHeader();
+    doc.setFont(FSERIF,'normal');doc.setFontSize(13);doc.setTextColor(...BLACKC);
+    pdfText(doc,'Tus resultados por categoría',pw/2,y,{align:'center',bold:true});y+=10;
+
+    doc.setDrawColor(...GRAYMID);doc.setLineWidth(0.2);doc.line(margin,y,pw-margin,y);y+=6;
+    for(let i=0;i<r.vars.length;i++){
+      const v=r.vars[i],sc=calcScore(v);
+      const rowH=11;
+      if(y+rowH>ph-14){footer();doc.addPage();bgPage();y=margin+4;}
+      const ic=await pdfIcon(v.icon,r.color,120);
+      if(ic) doc.addImage(ic,'PNG',margin,y,6,6);
+      doc.setFont(FSANS,'normal');doc.setFontSize(8.5);doc.setTextColor(...BLACKC);
+      doc.text(v.name,margin+8,y+4.3);
+      doc.setFont(FSERIF,'normal');doc.setFontSize(11);doc.setTextColor(cr,cg,cb);
+      pdfText(doc,sc%1===0?String(sc):sc.toFixed(1),pw-margin,y+4.6,{align:'right',bold:true});
+      doc.setDrawColor(...GRAYLIGHT);doc.setLineWidth(0.2);doc.line(margin,y+8,pw-margin,y+8);
+      y+=rowH;
+    }
+    footer();
+
+    // ══════════ HOJA 4 (MÓVIL) — OBSERVACIONES (máx. 5) ══════════
+    doc.addPage();bgPage();
+    y=runningHeader();
+    doc.setFont(FSERIF,'normal');doc.setFontSize(13);doc.setTextColor(...BLACKC);
+    const obsTitle=doc.splitTextToSize('Observaciones a tus puntajes más bajos',UW-4);
+    pdfText(doc,obsTitle,pw/2,y,{align:'center',bold:true});y+=obsTitle.length*6+2;
+    doc.setFont(FSANS,'normal');doc.setFontSize(8.5);doc.setTextColor(...GRAYTEXT);
+    const obsIntro=doc.splitTextToSize('Estas son las 5 áreas que hoy están pidiendo más tu atención. No son un juicio: son la señal más clara de dónde enfocar tu energía primero.',UW-6);
+    doc.text(obsIntro,pw/2,y,{align:'center'});y+=obsIntro.length*4.1+7;
+
+    const bajos=r.vars.map(v=>({v,sc:calcScore(v)})).filter(o=>o.sc<8).sort((a,b)=>a.sc-b.sc).slice(0,5);
+    if(bajos.length===0){
+      doc.setFont(FSANS,'italic');doc.setFontSize(9);doc.setTextColor(29,158,117);
+      doc.text('Todas tus áreas están en zona de fortaleza hoy. No hay puntajes bajos que resaltar.',pw/2,y+6,{align:'center'});
+    } else {
+      for(const{v,sc}of bajos){
+        const[lr,lg,lb]=hexToRgb(getLecturaColor(sc));
+        const ll=doc.splitTextToSize(getLectura(sc),UW-8);
+        const blockH=9+ll.length*4+6;
+        if(y+blockH>ph-14){footer();doc.addPage();bgPage();y=margin+4;}
+        const ic=await pdfIcon(v.icon,r.color,120);
+        doc.setFillColor(...GRAYLIGHT);doc.roundedRect(margin,y-3,UW,9,1,1,'F');
+        if(ic) doc.addImage(ic,'PNG',margin+2,y-1.8,5.5,5.5);
+        doc.setFillColor(cr,cg,cb);doc.roundedRect(pw-margin-13,y-2.3,11,7,1,1,'F');
+        doc.setFont(FSERIF,'normal');doc.setFontSize(8.5);doc.setTextColor(255,255,255);
+        pdfText(doc,sc%1===0?String(sc):sc.toFixed(1),pw-margin-7.5,y+3,{align:'center',bold:true});
+        doc.setFont(FSANS,'normal');doc.setFontSize(8.5);doc.setTextColor(...BLACKC);
+        pdfText(doc,v.name,margin+9,y+3,{bold:true});y+=9;
+        doc.setFillColor(lr,lg,lb);doc.roundedRect(margin,y-2,2.5,6.5,.5,.5,'F');
+        doc.setFont(FSANS,'italic');doc.setFontSize(7.5);doc.setTextColor(lr,lg,lb);
+        doc.text(ll,margin+5,y+2.2);y+=ll.length*4+6;
+      }
+    }
+    footer();
+
+    // ══════════ HOJAS 5 y 6 (MÓVIL) — PLAN DE PRIORIZACIÓN, mitad de categorías c/u ══════════
+    const halfW=(UW-4)/2,box1W=20,box2W=32;
+    const drawPrioCard=(v,cy)=>{
+      doc.setDrawColor(...GRAYMID);doc.setLineWidth(0.25);
+      doc.roundedRect(margin,cy,UW,24,1.5,1.5,'S');
+      return pdfIcon(v.icon,r.color,120).then(ic=>{
+        if(ic) doc.addImage(ic,'PNG',margin+3,cy+3,5.5,5.5);
+        doc.setFont(FSANS,'normal');doc.setFontSize(9);doc.setTextColor(...BLACKC);
+        doc.text(v.name,margin+10,cy+7.2);
+        doc.setFont(FSANS,'normal');doc.setFontSize(6);doc.setTextColor(...GRAYTEXT);
+        doc.text('PRIORIDAD (1–8)',margin+3,cy+15);
+        doc.text('ESTATUS',margin+3+halfW+4,cy+15);
+        doc.setDrawColor(200,196,190);
+        doc.roundedRect(margin+3,cy+16.5,box1W,6,1,1,'S');
+        doc.roundedRect(margin+3+halfW+4,cy+16.5,box2W,6,1,1,'S');
+      });
+    };
+    const mitad=Math.ceil(r.vars.length/2);
+    const primeraMitad=r.vars.slice(0,mitad), segundaMitad=r.vars.slice(mitad);
+
+    doc.addPage();bgPage();
+    y=runningHeader();
+    doc.setFont(FSERIF,'normal');doc.setFontSize(13);doc.setTextColor(...BLACKC);
+    pdfText(doc,'Plan de priorización',margin,y,{bold:true});y+=7;
+    doc.setFont(FSANS,'italic');doc.setFontSize(7.8);doc.setTextColor(...GRAYTEXT);
+    const instr=doc.splitTextToSize('Selecciona máximo 2 estados de prioridad alta, 1 media y el resto baja, para enfocar tu plan de priorización.',UW);
+    doc.text(instr,margin,y);y+=instr.length*3.8+3;
+    doc.setFont(FSANS,'normal');doc.setFontSize(7.3);doc.setTextColor(...GRAYTEXT);
+    const instr2=doc.splitTextToSize('Numera cada categoría del 1 al 8 (1 = prioridad máxima) y marca su estatus.',UW);
+    doc.text(instr2,margin,y);y+=instr2.length*3.6+6;
+    for(const v of primeraMitad){ await drawPrioCard(v,y); y+=24+4; }
+    footer();
+
+    doc.addPage();bgPage();
+    y=runningHeader();
+    doc.setFont(FSERIF,'normal');doc.setFontSize(13);doc.setTextColor(...BLACKC);
+    pdfText(doc,'Plan de priorización (continuación)',margin,y,{bold:true});y+=10;
+    for(const v of segundaMitad){ await drawPrioCard(v,y); y+=24+4; }
+    footer();
+
+  } else {
+    // ══════════ HOJA 1 (ESCRITORIO) — PORTADA ══════════
+    let y=margin+2;
+    y+=drawLogo(pw/2,y,27)+8;
+
+    const heroCy=y+18,rr=14,redCx=pw/2-8,blueCx=pw/2+8,orangeCx=pw/2,orangeCy=heroCy+13;
+    const circPos=[[redCx,heroCy,RUEDAS[0].color],[blueCx,heroCy,RUEDAS[1].color],[orangeCx,orangeCy,RUEDAS[2].color]];
+    circPos.forEach(([cx,cy,col])=>{doc.setFillColor(...tintRgb(col,0.12));doc.circle(cx,cy,rr,'F');});
+    circPos.forEach(([cx,cy,col])=>{doc.setDrawColor(...hexToRgb(col));doc.setLineWidth(0.6);doc.circle(cx,cy,rr,'S');});
+    y=orangeCy+rr+10;
+
+    doc.setFont(FSERIF,'normal');doc.setFontSize(23);doc.setTextColor(...BLACKC);
+    const t1='3 ruedas, ';const w1=doc.getTextWidth(t1);
+    const w2=doc.getTextWidth('un objetivo');
+    const tStartX=pw/2-(w1+w2)/2;
+    doc.setTextColor(...BLACKC);pdfText(doc,t1,tStartX,y,{bold:true});
+    doc.setFont(FSERIF,'italic');doc.setTextColor(...RED);doc.text('un objetivo',tStartX+w1,y);
+    y+=10;
+    doc.setFont(FSANS,'normal');doc.setFontSize(10.5);doc.setTextColor(...GRAYTEXT);
+    const sub=doc.splitTextToSize('Herramienta para comenzar a priorizar y enfocar tu energía, para sostener tu determinación, compromiso y motivación.',150);
+    doc.text(sub,pw/2,y,{align:'center'});y+=sub.length*5+8;
+
+    const boxW=150,boxX=(pw-boxW)/2;
+    doc.setFillColor(...GRAYLIGHT);doc.setDrawColor(...GRAYMID);doc.setLineWidth(0.25);
+    doc.roundedRect(boxX,y,boxW,16,2,2,'FD');
+    doc.setFillColor(...BLUE);doc.rect(boxX,y,1.4,16,'F');
+    doc.setFont(FSANS,'normal');doc.setFontSize(9);doc.setTextColor(...BLACKC);
+    const badgeTxt=doc.splitTextToSize('Este es el primer paso para desarrollar tu estrategia de accountability y desarrollo personal.',boxW-10);
+    doc.text(badgeTxt,boxX+6,y+6);
+    y+=16+10;
+
+    const infoH=32;
+    doc.setFillColor(...CREAM);doc.setDrawColor(...GRAYMID);doc.setLineWidth(0.3);
+    doc.roundedRect(boxX,y,boxW,infoH,2,2,'FD');
+    let iy=y+8;
+    doc.setFont(FSANS,'normal');doc.setFontSize(7);doc.setTextColor(...GRAYTEXT);
+    pdfText(doc,'COACHEE',boxX+7,iy,{bold:true});
+    doc.setFont(FSERIF,'normal');doc.setFontSize(10.5);doc.setTextColor(...BLACKC);
+    pdfText(doc,nombre,boxX+55,iy,{bold:true});
+    iy+=9;
+    doc.setFont(FSANS,'normal');doc.setFontSize(7);doc.setTextColor(...GRAYTEXT);
+    pdfText(doc,'FECHA',boxX+7,iy,{bold:true});
+    doc.setFont(FSANS,'normal');doc.setFontSize(10);doc.setTextColor(...BLACKC);
+    doc.text(fechaFmt,boxX+55,iy);
+    iy+=9;
+    doc.setFont(FSANS,'normal');doc.setFontSize(7);doc.setTextColor(...GRAYTEXT);
+    pdfText(doc,'RUEDA SELECCIONADA',boxX+7,iy,{bold:true});
+    const ruedaIconUrl=await pdfIcon(r.icon,r.color,120);
+    if(ruedaIconUrl) doc.addImage(ruedaIconUrl,'PNG',boxX+55,iy-3.5,4.5,4.5);
+    doc.setFont(FSERIF,'normal');doc.setFontSize(10.5);doc.setTextColor(cr,cg,cb);
+    pdfText(doc,ruedaFullName(r),boxX+55+(ruedaIconUrl?6:0),iy,{bold:true});
+
+    footer();
+
+    // ══════════ HOJA 2 (ESCRITORIO) — LA VENTANA DEL REPORTE ══════════
+    doc.addPage();bgPage();
+    y=runningHeader();
+
+    const textRoles={persona:'Persona',trabajo:'Trabajador',profesion:'Profesionista'};
+    const roleName=textRoles[r.id]||r.label;
+    doc.setFont(FSERIF,'normal');doc.setFontSize(15);
+    const preT='Esta es tu foto, como ',postT=', de hoy';
+    const totalW=doc.getTextWidth(preT)+doc.getTextWidth(roleName)+doc.getTextWidth(postT);
+    let tx=pw/2-totalW/2;
+    doc.setTextColor(...BLACKC);pdfText(doc,preT,tx,y,{bold:true});tx+=doc.getTextWidth(preT);
+    doc.setTextColor(cr,cg,cb);pdfText(doc,roleName,tx,y,{bold:true});tx+=doc.getTextWidth(roleName);
+    doc.setTextColor(...BLACKC);pdfText(doc,postT,tx,y,{bold:true});
+    y+=9;
+
+    doc.setFont(FSANS,'normal');doc.setFontSize(9);doc.setTextColor(60,58,55);
+    const cierre=doc.splitTextToSize('Esta es tu foto actual… refleja cómo están los pilares que sostienen esta área de tu vida. Si tu rueda no parece rueda, es señal de que necesitas hacer ajustes para enfocar tu energía. Este es el punto de partida que le dará dirección a tu accountability.',pw-margin*2-14);
+    doc.text(cierre,pw/2,y,{align:'center'});y+=cierre.length*4.4+7;
+
+    const rc2=document.createElement('canvas');rc2.width=600;rc2.height=600;
+    drawRadar(rc2,r.vars,r.color,true,-1,{size:14,weight:'bold',activeSize:14,activeWeight:'bold'});
+    const radarSize=100;
+    doc.addImage(rc2.toDataURL('image/png'),'PNG',(pw-radarSize)/2,y,radarSize,radarSize);
+    y+=radarSize+8;
+
+    doc.setDrawColor(...GRAYMID);doc.setLineWidth(0.2);doc.line(margin,y,pw-margin,y);y+=7;
+    const colGap=6,colW=(pw-margin*2-colGap)/2,colX=[margin,margin+colW+colGap];
+    let rowY=[y,y];
+    for(let i=0;i<r.vars.length;i++){
+      const v=r.vars[i],sc=calcScore(v),col=i%2,bx=colX[col],by=rowY[col];
+      doc.setDrawColor(230,227,221);doc.setLineWidth(0.25);
+      doc.roundedRect(bx,by,colW,12,1.5,1.5,'S');
+      const ic=await pdfIcon(v.icon,r.color,120);
+      if(ic) doc.addImage(ic,'PNG',bx+2.8,by+2.8,6.4,6.4);
+      doc.setFont(FSANS,'normal');doc.setFontSize(8.3);doc.setTextColor(...BLACKC);
+      doc.text(v.name,bx+11,by+7);
+      doc.setFont(FSERIF,'normal');doc.setFontSize(11);doc.setTextColor(cr,cg,cb);
+      pdfText(doc,sc%1===0?String(sc):sc.toFixed(1),bx+colW-4,by+7.5,{align:'right',bold:true});
+      rowY[col]+=15;
+    }
+    footer();
+
+    // ══════════ HOJA 3 (ESCRITORIO) — OBSERVACIONES (máx. 5) ══════════
+    doc.addPage();bgPage();
+    y=runningHeader();
+    doc.setFont(FSERIF,'normal');doc.setFontSize(15);doc.setTextColor(...BLACKC);
+    pdfText(doc,'Observaciones a tus puntajes más bajos',pw/2,y,{align:'center',bold:true});y+=7;
+    doc.setFont(FSANS,'normal');doc.setFontSize(9);doc.setTextColor(...GRAYTEXT);
+    const obsIntro=doc.splitTextToSize('Estas son las 5 áreas que hoy están pidiendo más tu atención. No son un juicio: son la señal más clara de dónde enfocar tu energía primero.',pw-margin*2-16);
+    doc.text(obsIntro,pw/2,y,{align:'center'});y+=obsIntro.length*4.3+8;
+
+    const bajos=r.vars.map(v=>({v,sc:calcScore(v)})).filter(o=>o.sc<8).sort((a,b)=>a.sc-b.sc).slice(0,5);
+    if(bajos.length===0){
+      doc.setFont(FSANS,'italic');doc.setFontSize(10);doc.setTextColor(29,158,117);
+      doc.text('Todas tus áreas están en zona de fortaleza hoy. No hay puntajes bajos que resaltar.',pw/2,y+8,{align:'center'});
+    } else {
+      for(const{v,sc}of bajos){
+        const[lr,lg,lb]=hexToRgb(getLecturaColor(sc));
+        if(y>ph-52){footer();doc.addPage();bgPage();y=margin+6;}
+        const ic=await pdfIcon(v.icon,r.color,120);
+        doc.setFillColor(...GRAYLIGHT);doc.roundedRect(margin,y-3,pw-margin*2,9,1,1,'F');
+        if(ic) doc.addImage(ic,'PNG',margin+2.5,y-2,6,6);
+        doc.setFillColor(cr,cg,cb);doc.roundedRect(pw-margin-14,y-2.5,12,7.5,1,1,'F');
+        doc.setFont(FSERIF,'normal');doc.setFontSize(9);doc.setTextColor(255,255,255);
+        pdfText(doc,sc%1===0?String(sc):sc.toFixed(1),pw-margin-8,y+3.5,{align:'center',bold:true});
+        doc.setFont(FSANS,'normal');doc.setFontSize(9);doc.setTextColor(...BLACKC);
+        pdfText(doc,v.name,margin+10,y+3.5,{bold:true});y+=10;
+        doc.setFillColor(lr,lg,lb);doc.roundedRect(margin,y-2,3,7,.5,.5,'F');
+        doc.setFont(FSANS,'italic');doc.setFontSize(8);doc.setTextColor(lr,lg,lb);
+        const ll=doc.splitTextToSize(getLectura(sc),pw-margin*2-8);
+        doc.text(ll,margin+6,y+2.3);y+=ll.length*4+5;
+      }
+    }
+    footer();
+
+    // ══════════ HOJA 4 (ESCRITORIO) — PLAN DE PRIORIZACIÓN (tabla) ══════════
+    doc.addPage();bgPage();
+    y=runningHeader();
+    doc.setFont(FSERIF,'normal');doc.setFontSize(15);doc.setTextColor(...BLACKC);
+    pdfText(doc,'Plan de priorización',margin,y,{bold:true});y+=7;
+    doc.setFont(FSANS,'italic');doc.setFontSize(8.5);doc.setTextColor(...GRAYTEXT);
+    const instr=doc.splitTextToSize('Selecciona máximo 2 estados de prioridad alta, 1 media y el resto baja, para enfocar tu plan de priorización.',pw-margin*2);
+    doc.text(instr,margin,y);y+=instr.length*4.2+3;
+    doc.setFont(FSANS,'normal');doc.setFontSize(8);doc.setTextColor(...GRAYTEXT);
+    doc.text('Numera cada categoría del 1 al 8 (1 = prioridad máxima) y marca su estatus de prioridad.',margin,y);y+=8;
+
+    const col1X=margin,col1W=92,col2X=col1X+col1W,col2W=34,col3X=col2X+col2W,col3W=pw-margin-col3X;
+    doc.setFillColor(cr,cg,cb);doc.rect(margin,y-5,pw-margin*2,8,'F');
+    doc.setFont(FSANS,'normal');doc.setFontSize(8);doc.setTextColor(255,255,255);
+    pdfText(doc,'CATEGORÍA',col1X+3,y,{bold:true});
+    pdfText(doc,'PRIORIDAD (1–8)',col2X+col2W/2,y,{align:'center',bold:true});
+    pdfText(doc,'ESTATUS',col3X+col3W/2,y,{align:'center',bold:true});
+    y+=8;
+
+    for(const v of r.vars){
+      const rowH=14;
+      if(y+rowH>ph-24){footer();doc.addPage();bgPage();y=margin+6;}
+      doc.setDrawColor(230,227,221);doc.setLineWidth(0.25);
+      doc.rect(margin,y-5,pw-margin*2,rowH,'S');
+      doc.line(col2X,y-5,col2X,y-5+rowH);
+      doc.line(col3X,y-5,col3X,y-5+rowH);
+      const ic=await pdfIcon(v.icon,r.color,120);
+      if(ic) doc.addImage(ic,'PNG',col1X+3,y-1.5,6,6);
+      doc.setFont(FSANS,'normal');doc.setFontSize(9.5);doc.setTextColor(...BLACKC);
+      doc.text(v.name,col1X+11,y+3);
+      doc.setDrawColor(200,196,190);
+      doc.roundedRect(col2X+col2W/2-6,y-1.5,12,9,1,1,'S');
+      doc.roundedRect(col3X+col3W/2-16,y-1.5,32,9,1,1,'S');
+      y+=rowH;
+    }
+    footer();
+  }
+
+  stampPageNumbers();
+  doc.save(`Punto-de-Partida-${r.label}-${nombre.replace(/\s+/g,'-')}${mobile?'-movil':'-escritorio'}.pdf`);
+  closeModal();
+}
+
+// ══ RESPONSIVE ══
+window.matchMedia('(min-width:900px)').addEventListener('change',e=>{
+  if(currentScreen==='rueda'&&!ruedaCompleted){
+    document.getElementById('mobileView').style.display=e.matches?'none':'';
+    document.getElementById('desktopView').style.display=e.matches?'grid':'none';
+    if(e.matches)addDesktopDoneBtn(selectedRuedaIdx);
+  }
+});
+
+// ══ INIT ══
+buildInicioGrid();
+buildInstrucciones();
+renderStory();
+buildPortadaHero();
+renderGlobalDots('portada');
+</script>
+</body>
+</html>
